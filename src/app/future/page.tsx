@@ -1,6 +1,6 @@
 "use client";
 
-import { Lightbulb, Mountain, Wallet, Compass, Camera, Mail, ChevronRight } from "lucide-react";
+import { Lightbulb, Mountain, Wallet, Compass, Camera, Mail, ChevronRight, Feather, Music } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { LinkCard, PageHeader, Section, Progress } from "@/components/ui";
 import { MediaView } from "@/components/media";
@@ -18,7 +18,20 @@ export default function Future() {
 
   return (
     <div>
-      <PageHeader eyebrow="My Future" title="Built one clear day at a time." subtitle={vault.profile.becoming ? `“${vault.profile.becoming}”` : undefined} />
+      <PageHeader eyebrow="My Future" title="Your dream life, loading…" subtitle={vault.profile.becoming ? `“${vault.profile.becoming}”` : undefined} />
+
+      <LinkCard href="/future/manifesto" className="sunlit mb-3">
+        <div className="eyebrow">Signature</div>
+        <div className="mt-1 flex items-center justify-between">
+          <div>
+            <div className="font-serif text-[28px] leading-tight">{vault.manifesto.title || "My Life Manifesto"}</div>
+            <div className="text-sm text-ink-3">
+              {vault.manifesto.text ? (vault.manifesto.approved ? "Approved. Yours." : "Draft ready for you to make yours") : "Write the life you're building"}
+            </div>
+          </div>
+          <Feather size={22} className="text-gold" />
+        </div>
+      </LinkCard>
 
       <LinkCard href="/future/vision" className="overflow-hidden !p-0">
         {covers.length > 0 ? (
@@ -56,7 +69,7 @@ export default function Future() {
         <div className="grid grid-cols-2 gap-2">
           <LinkCard href="/future/sober-life" className="p-4">
             <Compass size={18} className="mb-3 text-forest" />
-            <div className="font-medium">Sober life</div>
+            <div className="font-medium">Something to look forward to</div>
             <div className="text-xs text-ink-3">{plans ? `${plans} plans ahead` : "Weekends, dates, adventures"}</div>
           </LinkCard>
           <LinkCard href="/future/finances" className="p-4">
@@ -72,8 +85,13 @@ export default function Future() {
           </LinkCard>
           <LinkCard href="/future/letters" className="p-4">
             <Mail size={18} className="mb-3 text-forest" />
-            <div className="font-medium">Letters to me</div>
+            <div className="font-medium">Letters from my sober self</div>
             <div className="text-xs text-ink-3">{vault.letters.length} written</div>
+          </LinkCard>
+          <LinkCard href="/future/vibes" className="col-span-2 p-4">
+            <Music size={18} className="mb-3 text-forest" />
+            <div className="font-medium">Watch & listen</div>
+            <div className="text-xs text-ink-3">Movies, shows and music for your mood</div>
           </LinkCard>
         </div>
       </Section>

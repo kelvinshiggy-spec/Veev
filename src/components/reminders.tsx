@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useStore } from "@/lib/store";
 import { REMINDER_LINES } from "@/data/messages";
 import { dayKey, pickOfDay } from "@/lib/util";
+import { holidayNear } from "@/lib/seasons";
 import { BRAND } from "@/lib/brand";
 
 export async function showNotice(title: string, body: string) {
@@ -35,7 +36,20 @@ export function ReminderRunner() {
       const lines = REMINDER_LINES[r.tone];
       const mins = (t: string) => Number(t.slice(0, 2)) * 60 + Number(t.slice(3, 5));
       const inWindow = (t: string) => mins(hm) >= mins(t) && mins(hm) - mins(t) < 180;
+      // Quiet hours (may cross midnight) and weekend preference.
+      const qs = mins(r.quietStart || "22:30");
+      const qe = mins(r.quietEnd || "07:30");
+      const n = mins(hm);
+      const quiet = qs > qe ? n >= qs || n < qe : n >= qs && n < qe;
+      const weekend = now.getDay() === 0 || now.getDay() === 6;
+      if (quiet || (weekend && r.weekend === false)) return;
+      const shownToday = Object.values(r.lastShown).filter((d) => d === today).length;
+      const cap = r.maxPerDay || 3;
+      if (shownToday >= cap) return;
       const due: { slot: string; title: string; body: string }[] = [];
+      const holiday = holidayNear(today, 0);
+      if (holiday?.risky && inWindow("15:00") && r.lastShown.holiday !== today)
+        due.push({ slot: "holiday", title: r.privateText ? BRAND.name : holiday.name, body: r.privateText ? "A moment for you." : `${holiday.emoji} ${holiday.heads}` });
       if (inWindow(r.morning) && r.lastShown.morning !== today)
         due.push({ slot: "morning", title: r.privateText ? BRAND.name : "Good morning", body: r.privateText ? "A moment for you." : pickOfDay(lines, 1) ?? "" });
       if (inWindow(r.evening) && r.lastShown.evening !== today)
@@ -47,6 +61,7 @@ export function ReminderRunner() {
           body: r.privateText ? "A moment for you." : "Friday plans? Make tonight something your future self will appreciate.",
         });
       if (!due.length) return;
+      due.splice(Math.max(0, cap - shownToday));
       due.forEach((d) => showNotice(d.title, d.body));
       update((v) => ({
         ...v,

@@ -2,8 +2,8 @@
 
 import { useStore } from "@/lib/store";
 import type { Profile } from "@/lib/types";
-import { Card, Input, Label, ListEditor, PageHeader, Section, TextArea, Segmented, Button } from "@/components/ui";
-import { APPEALING, COPING_TOOLS, GROUNDING, LOVES, WARNING_SIGNS } from "@/data/options";
+import { Card, Input, Label, ListEditor, PageHeader, Section, TextArea, Segmented, Button, Chips } from "@/components/ui";
+import { APPEALING, COPING_TOOLS, GROUNDING, LOVES, WARNING_SIGNS, QUALITIES, VALUES } from "@/data/options";
 import { dayKey } from "@/lib/util";
 
 export default function ProfilePage() {
@@ -37,6 +37,41 @@ export default function ProfilePage() {
             <div>
               <Label>My goals</Label>
               <ListEditor value={p.goals} onChange={(v) => set("goals", v)} />
+            </div>
+          </div>
+        </Section>
+
+        <Section title="Who I'm becoming">
+          <div className="space-y-5">
+            <div>
+              <Label hint="Used to personalize reminders and conversations. Never a score.">Qualities I&apos;m growing into</Label>
+              <Chips options={QUALITIES} value={p.qualities} onChange={(v) => set("qualities", v)} />
+            </div>
+            <div>
+              <Label>My values</Label>
+              <Chips options={VALUES} value={p.values} onChange={(v) => set("values", v)} />
+            </div>
+            {text("familyHopes", "Family dreams", 2)}
+            {text("moneyHopes", "Money and freedom", 2)}
+            {text("fitnessGoals", "Fitness and wellness", 2)}
+            {text("soberJoys", "What I love about sober life", 2)}
+          </div>
+        </Section>
+
+        <Section title="My world">
+          <div className="space-y-5">
+            <div>
+              <Label hint="Pets, people, little things my companion can ask about.">My world</Label>
+              <ListEditor value={p.myWorld} onChange={(v) => set("myWorld", v)} placeholder="Add someone or something" />
+            </div>
+            {text("family", "My parents and family", 3)}
+            <div>
+              <Label>Music I love</Label>
+              <Input value={p.favMusic} onChange={(e) => set("favMusic", e.target.value)} />
+            </div>
+            <div>
+              <Label>Movies and shows I love</Label>
+              <Input value={p.favMovies} onChange={(e) => set("favMovies", e.target.value)} />
             </div>
           </div>
         </Section>
@@ -97,7 +132,7 @@ export default function ProfilePage() {
           </div>
         </Section>
 
-        <Section title="How Clarity talks to me">
+        <Section title="How my companion talks to me">
           <Card className="space-y-4">
             <Segmented
               value={p.directness}

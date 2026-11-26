@@ -1,10 +1,11 @@
 "use client";
 
-import { Sparkles, Lock, Scale, Hand, Send, Leaf, HeartHandshake, ChevronRight } from "lucide-react";
+import { Mic, Settings2, Sparkles, Lock, Scale, Hand, Send, Leaf, HeartHandshake, ChevronRight } from "lucide-react";
 import { LinkCard, PageHeader, Section } from "@/components/ui";
 import { useStore } from "@/lib/store";
 import { fmtDate } from "@/lib/util";
 import Link from "next/link";
+import { CName } from "@/components/companion-name";
 
 const TOOLS = [
   { href: "/clarity/room", icon: Lock, title: "The Private Room", body: "Say everything. Choose whether anyone responds." },
@@ -20,13 +21,25 @@ export default function ClarityHub() {
   const recent = [...vault.chats].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)).slice(0, 3);
   return (
     <div>
-      <PageHeader eyebrow="Clarity" title="Think clearly. Feel fully." subtitle="Your companion and coach, and the tools you've learned, in one quiet place." />
+      <PageHeader eyebrow="Your companion" title="Talk it out. Figure it out." subtitle="Your companion and coach, and the tools you've learned, in one quiet place." />
 
-      <LinkCard href="/clarity/chat" className="relative overflow-hidden bg-forest !text-on-forest">
-        <Sparkles size={20} className="mb-6 text-gold" />
-        <div className="font-serif text-3xl text-on-forest">Talk to Clarity</div>
-        <p className="mt-1 text-sm text-on-forest/80">Support, reflection, honest challenge, coaching. You choose.</p>
-      </LinkCard>
+      <div className="grid grid-cols-2 gap-2">
+        <LinkCard href="/voice" className="relative col-span-2 overflow-hidden bg-forest !text-on-forest">
+          <Mic size={20} className="mb-6 text-gold" />
+          <div className="font-serif text-3xl text-on-forest">Talk to <CName /></div>
+          <p className="mt-1 text-sm text-on-forest/80">Out loud, hands-free. Your bestie, guide and coach.</p>
+        </LinkCard>
+        <LinkCard href="/clarity/chat" className="!p-4">
+          <Sparkles size={16} className="mb-2 text-gold" />
+          <div className="font-medium">Text chat</div>
+          <div className="text-xs text-ink-3">Support, challenge, coaching</div>
+        </LinkCard>
+        <LinkCard href="/me/companion" className="!p-4">
+          <Settings2 size={16} className="mb-2 text-gold" />
+          <div className="font-medium">Companion settings</div>
+          <div className="text-xs text-ink-3">Voice, vibe, name</div>
+        </LinkCard>
+      </div>
 
       {recent.length > 0 && (
         <Section title="Recent conversations" className="mt-6">

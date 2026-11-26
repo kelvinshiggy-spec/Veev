@@ -2,8 +2,8 @@
  * - Keeps the app shell, the Help page and core coping tools available offline.
  * - Never caches /api responses (personal content is never stored by the service worker).
  */
-const VERSION = "veev-v1";
-const CORE = ["/today", "/help", "/protect", "/regulate", "/talk", "/back", "/offline.html", "/icon-192.png", "/manifest.webmanifest"];
+const VERSION = "veev-v2";
+const CORE = ["/today", "/help", "/protect", "/regulate", "/talk", "/back", "/future/manifesto", "/future/letters", "/future/memories", "/offline.html", "/icon-192.png", "/manifest.webmanifest"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(

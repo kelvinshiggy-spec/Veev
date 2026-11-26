@@ -5,7 +5,7 @@ import { useStore } from "@/lib/store";
 import { useSafety } from "@/components/safety";
 import { Button, Card, PageHeader, TextArea, Progress } from "@/components/ui";
 import { AiErrorNote, NotTherapy, useAiReady } from "@/components/ai-gate";
-import { buildContext, streamClarity, type AiError } from "@/lib/ai";
+import { buildContext, companionPayload, streamClarity, type AiError } from "@/lib/ai";
 import { screen } from "@/lib/safety";
 import { uid } from "@/lib/util";
 
@@ -43,7 +43,7 @@ export default function Perspective() {
     const text = QS.map(([k, label]) => `${label}\n${a[k] || "(skipped)"}`).join("\n\n");
     setBusy(true);
     setError(undefined);
-    const res = await streamClarity({ task: "room", mode: "challenge", text, directness: vault.profile.directness, context: buildContext(vault), safety: screen(text) }, setReply);
+    const res = await streamClarity({ task: "room", mode: "challenge", text, directness: vault.profile.directness, context: buildContext(vault), companion: companionPayload(vault), safety: screen(text) }, setReply);
     setBusy(false);
     if (res.error) setError(res.error);
   };
@@ -58,7 +58,7 @@ export default function Perspective() {
         </Card>
         {ready && !reply && (
           <Button full variant="outline" className="mt-4" onClick={ask} disabled={busy}>
-            {busy ? "Thinking…" : "Ask Clarity for another view"}
+            {busy ? "Thinking…" : "Ask for another view"}
           </Button>
         )}
         {reply && <Card className="mt-4 whitespace-pre-wrap text-[15px] leading-relaxed">{reply}</Card>}

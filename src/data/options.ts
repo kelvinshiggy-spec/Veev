@@ -16,8 +16,32 @@ export const LOVES = [
   "Cooking",
   "Reading",
   "Music",
+  "EDM",
+  "Afrobeats",
+  "Beauty & skincare",
+  "Building my own brand",
   "Faith",
 ];
+
+export const QUALITIES = [
+  "Calm",
+  "Confident",
+  "Disciplined",
+  "Honest",
+  "Loving",
+  "Dependable",
+  "Emotionally intelligent",
+  "Sophisticated",
+  "Healthy",
+  "Financially responsible",
+  "Accountable",
+  "Independent",
+  "Resilient",
+  "Compassionate",
+  "Thoughtful",
+];
+
+export const VALUES = ["Family", "Faith", "Honesty", "Health", "Freedom", "Loyalty", "Growth", "Peace", "Adventure", "Kindness", "Excellence", "Independence", "Beauty", "Gratitude"];
 
 export const APPEALING = [
   "Celebrating something",
@@ -112,6 +136,10 @@ export const TRIGGERS = [
   "Feeling unusually happy",
   "Thinking one drink will be harmless",
   "Missing the feeling of being intoxicated",
+  "Anger",
+  "Feeling unusually confident",
+  "Wanting to escape",
+  "Holidays and parties",
 ];
 
 export const EMOTIONS = [

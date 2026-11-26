@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Phone, MessageSquare, Mail, Film, Sparkles, Wind, Route } from "lucide-react";
+import { Phone, MessageSquare, Mail, Film, Sparkles, Wind, Route, Mic, Feather, Compass } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { Button, Card, Chips, Label, Section, TextArea, Pill } from "@/components/ui";
 import { HOPES, TRIGGERS, LETTER_FOR } from "@/data/options";
@@ -13,9 +13,12 @@ import { verseFor } from "@/data/verses";
 import { MediaView } from "@/components/media";
 import type { CravingEvent } from "@/lib/types";
 import { SUPPORT_TEMPLATES } from "@/data/messages";
+import { CName } from "@/components/companion-name";
+import { IDEAS } from "@/data/activities";
 
-type Phase = "open" | "intensity" | "hopes" | "trigger" | "plan" | "delay" | "reassess" | "done";
+type Phase = "open" | "choose" | "protect" | "intensity" | "hopes" | "trigger" | "plan" | "delay" | "reassess" | "done";
 const DELAY_KEY = "elevate.delayUntil";
+const PROTECT_OPTIONS = ["Tomorrow morning", "My streak", "My peace", "My family", "My relationship", "My plans tomorrow", "My money goals", "My health", "My self-respect", "My gym progress", "My cats"];
 
 const HOPE_LINES: Record<string, string> = {
   "To celebrate": "Not every good day needs alcohol to become a celebration. You can mark this moment in a way you'll actually remember.",
@@ -41,6 +44,7 @@ export default function Protect() {
   const [what, setWhat] = useState("");
   const [eventId] = useState(uid);
   const [after, setAfter] = useState(5);
+  const [protecting, setProtecting] = useState<string[]>([]);
 
   const s = sobrietyStats(vault);
   const p = vault.profile;
@@ -80,6 +84,18 @@ export default function Protect() {
   }, [hopes, triggers, vault.letters]);
 
   const memories = vault.memories.slice(-6).reverse();
+  const alternatives = useMemo(() => {
+    const loves = p.hobbies.join(" ").toLowerCase();
+    const score = (c: string) => (c.split(/[ &]+/).some((w) => w.length > 3 && loves.includes(w.toLowerCase())) ? 2 : 0);
+    return IDEAS.filter((x) => (x.time === "hour" || x.time === "half") && x.energy !== "high" && x.category !== "Alcohol-free social")
+      .map((x) => ({ ...x, s: score(x.category) + ((x.title.length * 7 + new Date().getDate()) % 3) }))
+      .sort((a, b) => b.s - a.s)
+      .slice(0, 4);
+  }, [p.hobbies]);
+  const manifestoLines = vault.manifesto.text
+    .split("\n")
+    .filter((l) => /alcohol|drink|protect|feel|choose/i.test(l))
+    .slice(0, 3);
   const contacts = vault.contacts.filter((c) => c.phone);
 
   return (
@@ -99,10 +115,35 @@ export default function Protect() {
               <Button variant="outline" size="lg" onClick={() => router.push("/back")}>
                 Yes
               </Button>
-              <Button size="lg" onClick={() => setPhase("intensity")}>
+              <Button size="lg" onClick={() => setPhase("choose")}>
                 Not yet
               </Button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {phase === "choose" && (
+        <div className="pt-6">
+          <div className="eyebrow mb-4">Okay. Proud of you for pausing.</div>
+          <h1 className="font-serif text-[36px] leading-[1.1]">How do you want to do this?</h1>
+          <div className="mt-8 space-y-3">
+            <button onClick={() => router.push("/voice?topic=craving")} className="flex w-full items-center gap-4 rounded-[22px] bg-forest p-5 text-left text-on-forest">
+              <Mic size={22} />
+              <span>
+                <span className="block font-serif text-2xl leading-none">
+                  Talk to <CName />
+                </span>
+                <span className="mt-1 block text-sm opacity-80">Just talk. We&apos;ll figure out tonight together.</span>
+              </span>
+            </button>
+            <button onClick={() => setPhase("intensity")} className="card flex w-full items-center gap-4 p-5 text-left">
+              <Compass size={22} className="text-gold" />
+              <span>
+                <span className="block font-serif text-2xl leading-none">Guided plan</span>
+                <span className="mt-1 block text-sm text-ink-3">A few taps, your own reasons, a 20-minute pause.</span>
+              </span>
+            </button>
           </div>
         </div>
       )}
@@ -137,13 +178,19 @@ export default function Protect() {
           title="What happened just before?"
           onNext={() => {
             saveEvent({});
-            setPhase("plan");
+            setPhase("protect");
           }}
         >
           <Chips options={TRIGGERS} value={triggers} onChange={setTriggers} />
           <div className="mt-5">
             <TextArea voice value={what} onChange={setWhat} rows={3} placeholder="In your own words (optional)" />
           </div>
+        </Step>
+      )}
+
+      {phase === "protect" && (
+        <Step title="What do you want to protect tonight?" sub="Tomorrow morning, your plans, someone you love, your streak, your peace. Anything." onNext={() => setPhase("plan")}>
+          <Chips options={PROTECT_OPTIONS} value={protecting} onChange={setProtecting} />
         </Step>
       )}
 
@@ -162,6 +209,27 @@ export default function Protect() {
               <p className="font-serif text-xl leading-snug">“{p.afterFirstDrink}”</p>
               <p className="mt-2 text-sm text-ink-3">What you told us usually happens after the first drink.</p>
             </Card>
+          )}
+
+          {protecting.length > 0 && (
+            <Card className="sunlit">
+              <div className="eyebrow mb-2">Tonight you&apos;re protecting</div>
+              <p className="font-serif text-2xl leading-snug">{protecting.join(", ")}.</p>
+            </Card>
+          )}
+
+          {manifestoLines.length > 0 && (
+            <Link href="/future/manifesto" className="card block p-5">
+              <div className="eyebrow mb-2 flex items-center gap-1.5">
+                <Feather size={12} /> Your Life Manifesto
+              </div>
+              {manifestoLines.map((l) => (
+                <p key={l} className="font-serif text-[19px] leading-snug">
+                  {l}
+                </p>
+              ))}
+              <p className="mt-2 text-sm text-ink-3">Read all of it →</p>
+            </Link>
           )}
 
           {p.whySober && (
@@ -198,6 +266,18 @@ export default function Protect() {
             <Tile href="/regulate" icon={Wind} label="Regulate first" />
             <Tile href="/future/letters" icon={Mail} label="Your letters" />
           </div>
+
+          <Section title="Instead, right now">
+            <div className="space-y-2">
+              {alternatives.map((a) => (
+                <div key={a.title} className="flex items-center justify-between gap-3 rounded-2xl border border-line bg-surface px-4 py-3">
+                  <span className="text-[15px]">{a.title}</span>
+                  <span className="shrink-0 text-xs text-ink-3">{a.category}</span>
+                </div>
+              ))}
+            </div>
+            <p className="mt-2 text-xs text-ink-3">Gym or a walk only if you feel physically well and it&apos;s safe out.</p>
+          </Section>
 
           <SupportRow contacts={contacts} />
           <CravingVerse />
@@ -247,7 +327,7 @@ export default function Protect() {
               Still strong. Another 20 minutes
             </Button>
             <Button variant="ghost" onClick={() => router.push("/clarity/chat?topic=craving")}>
-              Talk to Clarity
+              Talk to <CName />
             </Button>
             <Button
               variant="ghost"
@@ -504,7 +584,7 @@ function Delay({
           <Link href="/regulate">Breathing & grounding</Link>
         </Pill>
         <Pill>
-          <Link href="/clarity/chat?topic=craving">Talk to Clarity</Link>
+          <Link href="/clarity/chat?topic=craving">Talk to <CName /></Link>
         </Pill>
         <Pill>
           <Link href="/protect/tape">

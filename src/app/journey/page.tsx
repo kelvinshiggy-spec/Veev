@@ -19,6 +19,7 @@ const KIND_LABEL: Record<EntryKind, string> = {
   pause: "Pause",
   studio: "Skill practice",
   reflection: "Reflection",
+  voice: "Conversation",
 };
 
 export default function Journey() {

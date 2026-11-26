@@ -26,7 +26,7 @@ export default function RemindersPage() {
 
   return (
     <div>
-      <PageHeader back="/me" eyebrow="Reminders" title="Supportive, never nagging." />
+      <PageHeader back="/me" eyebrow="Reminders" title="Cute little nudges. Never nagging." />
       <Card>
         <Toggle checked={r.enabled} onChange={enable} label="Gentle reminders" hint="A morning and evening note in the tone you choose." />
         {perm === "denied" && <p className="pb-2 text-sm text-rose">Notifications are blocked for this site in your browser settings.</p>}
@@ -46,6 +46,29 @@ export default function RemindersPage() {
             </div>
           </div>
           <Toggle checked={r.friday} onChange={(v) => set("friday", v)} label="Friday evening nudge" hint="Around 5pm, a reminder to make a plan." />
+          <Toggle checked={r.weekend} onChange={(v) => set("weekend", v)} label="Weekend reminders" />
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <Label>Quiet from</Label>
+              <Input type="time" value={r.quietStart} onChange={(e) => set("quietStart", e.target.value)} />
+            </div>
+            <div>
+              <Label>Until</Label>
+              <Input type="time" value={r.quietEnd} onChange={(e) => set("quietEnd", e.target.value)} />
+            </div>
+          </div>
+          <div>
+            <Label hint="We'll never send more than this in a day.">Max per day</Label>
+            <Segmented
+              value={String(r.maxPerDay) as "1" | "2" | "3"}
+              onChange={(v) => set("maxPerDay", Number(v))}
+              options={[
+                { value: "1", label: "1" },
+                { value: "2", label: "2" },
+                { value: "3", label: "3" },
+              ]}
+            />
+          </div>
         </Card>
       </Section>
 

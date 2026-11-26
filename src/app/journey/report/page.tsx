@@ -174,7 +174,7 @@ export default function Report() {
             if (r.error) setError(r.error);
           }}
         >
-          {busy ? "Writing…" : "Ask Clarity for a personal reflection"}
+          {busy ? "Writing…" : "Ask for a personal reflection"}
         </Button>
       )}
       <AiErrorNote error={error} />

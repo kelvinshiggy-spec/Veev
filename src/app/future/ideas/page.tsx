@@ -205,7 +205,7 @@ export default function Ideas() {
       </Button>
       {!ready && (
         <div className="mt-4">
-          <Notice>With Clarity&apos;s AI on, ideas get shaped for you automatically. Without it, you can still shape them yourself in a few taps.</Notice>
+          <Notice>With the AI companion on, ideas get shaped for you automatically. Without it, you can still shape them yourself in a few taps.</Notice>
         </div>
       )}
       <div className="mt-3">

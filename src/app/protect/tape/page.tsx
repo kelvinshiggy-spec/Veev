@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Volume2, Square } from "lucide-react";
+import { speakAsCompanion, stopSpeaking, speechSupported } from "@/lib/voice";
 import { useStore } from "@/lib/store";
 import { Button, Card, PageHeader, TextArea, Segmented } from "@/components/ui";
 import { sobrietyStats } from "@/lib/sobriety";
@@ -53,6 +55,26 @@ export default function TapeForward() {
     { k: "calm", q: "How would staying steady tonight help your relationships and your peace?", hint: "Emotional stability is something you've been building." },
   ];
   const qs = path === "a" ? A : B;
+  const [playing, setPlaying] = useState(false);
+  useEffect(() => () => stopSpeaking(), []);
+  useEffect(() => {
+    stopSpeaking();
+    setPlaying(false);
+  }, [path]);
+  const narrate = () => {
+    if (playing) {
+      stopSpeaking();
+      setPlaying(false);
+      return;
+    }
+    const intro =
+      path === "a"
+        ? "Let's gently play this one forward. No judgment, just honesty. Take each question slowly."
+        : "Now let's imagine the other path. Breathe, and picture it clearly.";
+    const body = qs.map((x) => `${x.q} ${x.hint.startsWith("You wrote") ? x.hint : ""}`).join(" … ");
+    setPlaying(true);
+    speakAsCompanion(`${intro} ${body}`, vault.companion, { onEnd: () => setPlaying(false) });
+  };
 
   return (
     <div>
@@ -70,6 +92,12 @@ export default function TapeForward() {
           { value: "b", label: "Path B · Protecting tonight" },
         ]}
       />
+
+      {speechSupported() && (
+        <Button variant="soft" size="sm" className="mt-4" onClick={narrate}>
+          {playing ? <Square size={14} /> : <Volume2 size={14} />} {playing ? "Stop" : "Walk me through it out loud"}
+        </Button>
+      )}
 
       {path === "a" && (pastLapses.length > 0 || drankCravings > 0) && (
         <Card className="mt-5 bg-surface-2">

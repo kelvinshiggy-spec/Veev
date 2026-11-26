@@ -35,6 +35,14 @@ export const AI_MEMORY_KEYS: { key: string; label: string }[] = [
   { key: "streak", label: "Your sober day count" },
   { key: "recentMood", label: "Today's check-in" },
   { key: "faith", label: "That faith matters to you" },
+  { key: "qualities", label: "Qualities you're growing into" },
+  { key: "values", label: "Your values" },
+  { key: "lifeHopes", label: "Family, money and fitness hopes" },
+  { key: "soberJoys", label: "What you love about sober life" },
+  { key: "myWorld", label: "Your world (pets, people, little things)" },
+  { key: "family", label: "Your parents and family" },
+  { key: "tastes", label: "Movies, shows and music you love" },
+  { key: "manifesto", label: "Your Life Manifesto (once approved)" },
 ];
 
 export function emptyVault(): Vault {
@@ -63,6 +71,17 @@ export function emptyVault(): Vault {
       dailyDrinkSpend: 25,
       currency: "USD",
       onboarded: false,
+      qualities: [],
+      values: [],
+      familyHopes: "",
+      moneyHopes: "",
+      fitnessGoals: "",
+      soberJoys: "",
+      personalized: false,
+      myWorld: ["My cats, Cookies and Codie"],
+      family: "",
+      favMovies: "",
+      favMusic: "EDM and Afrobeats",
     },
     streaks: [],
     checkIns: [],
@@ -91,9 +110,17 @@ export function emptyVault(): Vault {
       privateText: true,
       tone: "warm",
       lastShown: {},
+      quietStart: "22:30",
+      quietEnd: "07:30",
+      weekend: true,
+      topics: ["sobriety", "joy", "perspective", "future"],
+      maxPerDay: 3,
     },
     settings: {
-      theme: "system",
+      theme: "auto",
+      themeV2: true,
+      coverPhotoIds: [],
+      editions: { morning: true, evening: true },
       reducedMotion: false,
       haptics: true,
       aiConsent: false,
@@ -103,21 +130,46 @@ export function emptyVault(): Vault {
       faith: true,
       ritualHidden: [],
     },
+    companion: {
+      persona: "vylie",
+      name: "Vylie",
+      voiceURI: "",
+      rate: 1,
+      warmth: 4,
+      enthusiasm: 3,
+      affectionate: false,
+      greeting: "",
+      subtitles: true,
+      handsFree: true,
+      saveTranscripts: false,
+    },
+    manifesto: { title: "The Life I'm Building", text: "", approved: false, updatedAt: "", photoIds: [], inMorning: true },
+    usage: { month: "", aiCalls: 0, voiceMinutes: 0 },
   };
 }
 
 /** Fill any fields missing from older saved vaults */
 export function migrate(v: Partial<Vault>): Vault {
   const base = emptyVault();
+  const settings = { ...base.settings, ...(v.settings ?? {}) } as Vault["settings"];
+  // 2.0: VEEV became brighter. Anyone still on the old default ("follow the phone") moves to
+  // automatic day/night once. A deliberate light or dark choice is kept.
+  if (!v.settings?.themeV2) {
+    if (settings.theme === "system") settings.theme = "auto";
+    settings.themeV2 = true;
+  }
   return {
     ...base,
     ...v,
     profile: { ...base.profile, ...(v.profile ?? {}) },
     therapy: { ...base.therapy, ...(v.therapy ?? {}) },
     reminders: { ...base.reminders, ...(v.reminders ?? {}) },
+    companion: { ...base.companion, ...(v.companion ?? {}) },
+    manifesto: { ...base.manifesto, ...(v.manifesto ?? {}) },
+    usage: { ...base.usage, ...(v.usage ?? {}) },
     settings: {
-      ...base.settings,
-      ...(v.settings ?? {}),
+      ...settings,
+      editions: { ...base.settings.editions, ...(v.settings?.editions ?? {}) },
       aiMemory: { ...base.settings.aiMemory, ...(v.settings?.aiMemory ?? {}) },
     },
   } as Vault;

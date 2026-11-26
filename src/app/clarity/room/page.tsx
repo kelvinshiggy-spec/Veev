@@ -5,7 +5,7 @@ import { Trash2 } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { Button, Card, Chips, PageHeader, Section, TextArea, Toggle, Pill } from "@/components/ui";
 import { AiErrorNote, AiNotice, NotTherapy, useAiReady } from "@/components/ai-gate";
-import { buildContext, streamClarity, type AiError } from "@/lib/ai";
+import { buildContext, companionPayload, streamClarity, type AiError } from "@/lib/ai";
 import { screen, INTERRUPTING } from "@/lib/safety";
 import { useSafety } from "@/components/safety";
 import { fmtDate, fmtTime, uid } from "@/lib/util";
@@ -14,12 +14,15 @@ import type { JournalEntry } from "@/lib/types";
 const MODES: { v: string; label: string }[] = [
   { v: "listen", label: "Just listen" },
   { v: "understand", label: "Help me understand" },
-  { v: "challenge", label: "Challenge my perspective" },
+  { v: "balanced", label: "Give me a balanced view" },
+  { v: "challenge", label: "Challenge me gently" },
   { v: "calm", label: "Help me calm down" },
   { v: "decide", label: "Help me make a decision" },
   { v: "accountability", label: "Help me take accountability" },
   { v: "sober", label: "Help me avoid drinking" },
+  { v: "communicate", label: "Help me communicate" },
   { v: "therapy", label: "Prepare this for therapy" },
+  { v: "positive", label: "Let's talk about something good" },
 ];
 
 export default function Room() {
@@ -58,7 +61,7 @@ export default function Room() {
     setBusy(true);
     setError(undefined);
     const res = await streamClarity(
-      { task: "room", mode, text, directness: vault.profile.directness, context: buildContext(vault), safety: flags },
+      { task: "room", mode, text, directness: vault.profile.directness, context: buildContext(vault), companion: companionPayload(vault), safety: flags },
       setReply,
     );
     setBusy(false);
@@ -99,7 +102,7 @@ export default function Room() {
           <Toggle checked={forTherapy} onChange={setForTherapy} label="Flag for therapy" hint="Adds this to things to discuss. Only you see it." />
           {mode !== "listen" && <AiNotice compact />}
           <Button full size="lg" className="mt-4" onClick={submit} disabled={!text.trim() || busy}>
-            {mode === "listen" ? "Let it out" : busy ? "Clarity is reading…" : "Save and respond"}
+            {mode === "listen" ? "Let it out" : busy ? "Reading…" : "Save and respond"}
           </Button>
         </>
       )}

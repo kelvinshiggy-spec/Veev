@@ -3,6 +3,7 @@
 import { SESSIONS } from "@/data/studio";
 import { PageHeader, Section, Notice, LinkCard } from "@/components/ui";
 import { SessionList } from "@/components/session-list";
+import { CName } from "@/components/companion-name";
 
 export default function Relationships() {
   return (
@@ -27,7 +28,7 @@ export default function Relationships() {
         </div>
       </Section>
       <Notice>
-        Clarity won&apos;t act as judge in a disagreement. For a balanced view, your therapist and people you trust are the best sounding boards. If you ever feel unsafe, tap Help at the top.
+        <CName /> won&apos;t act as judge in a disagreement. For a balanced view, your therapist and people you trust are the best sounding boards. If you ever feel unsafe, tap Help at the top.
       </Notice>
     </div>
   );

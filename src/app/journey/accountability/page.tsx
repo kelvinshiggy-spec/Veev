@@ -9,12 +9,13 @@ const QS = [
   "Was I honest with myself?",
   "Did I communicate respectfully?",
   "Did I act according to my values?",
-  "Did I make assumptions?",
-  "Did I listen to other perspectives?",
+  "Did I make assumptions without enough information?",
+  "Did I consider other perspectives?",
   "Did I take responsibility where appropriate?",
   "Did I seek reassurance instead of tolerating uncertainty?",
   "Did I respect my own boundaries?",
   "Did I protect my sobriety?",
+  "Is there anything I want to repair tomorrow?",
 ] as const;
 
 const OPTS = ["Yes", "Partly", "Not this time"];

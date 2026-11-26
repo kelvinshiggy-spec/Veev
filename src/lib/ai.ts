@@ -1,5 +1,9 @@
 "use client";
 
+import { persona } from "@/data/personas";
+import { seasonalContext } from "./seasons";
+import { describe } from "./weather";
+
 import { useEffect, useState } from "react";
 import type { Vault } from "./types";
 import { accessToken } from "./supabase";
@@ -84,7 +88,33 @@ export function buildContext(v: Vault): string {
     if (c) lines.push(`Today's check-in: mood ${c.mood}/5, craving ${c.craving}/10, feeling ${c.emotions.join(", ") || "unspecified"}`);
   }
   if (allow.faith && v.settings.faith) lines.push("Faith matters to her (Christian).");
+  add("qualities", "Qualities she is growing into", p.qualities);
+  add("values", "Her values", p.values);
+  add("lifeHopes", "Family hopes", p.familyHopes);
+  add("lifeHopes", "Financial ambitions", p.moneyHopes);
+  add("lifeHopes", "Fitness goals", p.fitnessGoals);
+  add("soberJoys", "What she loves about sober life (her words)", p.soberJoys);
+  add("family", "Her parents and family (her words)", p.family);
+  add("tastes", "Movies and shows she loves", p.favMovies);
+  add("tastes", "Music she loves", p.favMusic);
+  add("myWorld", "Her world (pets, people and things she'd love to be asked about)", p.myWorld);
+  add("becoming", "Her ideal life", p.idealLife);
+  if (allow.manifesto && v.manifesto.approved && v.manifesto.text) lines.push(`Her Life Manifesto (approved by her):\n${v.manifesto.text.slice(0, 1500)}`);
+  // Date, season, holidays and (if she turned it on) local weather, so the companion stays current.
+  let weather: string | undefined;
+  try {
+    const w = v.settings.weather ? JSON.parse(localStorage.getItem("elevate.weather") || "null") : null;
+    if (w && Date.now() - w.at < 3 * 3600_000) weather = `${Math.round(w.temp)}°${w.unit.toUpperCase()}, ${describe(w.code).label.toLowerCase()}`;
+  } catch {}
+  lines.push(seasonalContext(dayKey(), weather));
   return lines.join("\n");
+}
+
+/** The companion's name and personality, sent with each conversation. */
+export function companionPayload(v: Vault) {
+  const c = v.companion;
+  const p = persona(c.persona);
+  return { name: c.name || p.name, style: p.style, warmth: c.warmth, enthusiasm: c.enthusiasm, affectionate: c.affectionate };
 }
 
 export type AiError = { kind: "not_configured" | "offline" | "auth" | "busy" | "error"; message: string };

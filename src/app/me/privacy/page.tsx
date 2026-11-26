@@ -10,6 +10,7 @@ import { Button, Card, Input, Label, Notice, PageHeader, Section, Toggle, Segmen
 import { getMedia } from "@/lib/media";
 import { b64 } from "@/lib/crypto";
 import { BRAND } from "@/lib/brand";
+import { CName } from "@/components/companion-name";
 
 export default function Privacy() {
   const { vault, update, hasLock, setPasscode, removePasscode } = useStore();
@@ -27,7 +28,7 @@ export default function Privacy() {
             <strong className="font-medium text-ink">Optional encrypted backup.</strong> If you turn on sync, an encrypted copy is stored in the cloud. It&apos;s locked with your passcode before it leaves your phone, so the person who set up {BRAND.name}, and the database provider, can&apos;t read it.
           </p>
           <p>
-            <strong className="font-medium text-ink">Clarity&apos;s AI.</strong> When you talk to Clarity (and only then), your message, the conversation, and the profile details you allow are sent over an encrypted connection to the app&apos;s server and on to Anthropic to write a reply. The server doesn&apos;t log what you write. Anthropic&apos;s API terms apply to that processing.
+            <strong className="font-medium text-ink">Your AI companion.</strong> When you talk to <CName /> (and only then), your message, the conversation, and the profile details you allow are sent over an encrypted connection to the app&apos;s server and on to Anthropic to write a reply. The server doesn&apos;t log what you write. Anthropic&apos;s API terms apply to that processing.
           </p>
           <p>
             <strong className="font-medium text-ink">No tracking.</strong> No analytics, ads or trackers. Nothing is shared with anyone, ever, unless you choose to share it yourself.
@@ -38,7 +39,7 @@ export default function Privacy() {
 
       <LockSection hasLock={hasLock} setPasscode={setPasscode} removePasscode={removePasscode} minutes={vault.settings.lockMinutes} setMinutes={(m) => update((v) => ({ ...v, settings: { ...v.settings, lockMinutes: m } }))} />
 
-      <Section title="Clarity's AI">
+      <Section title="AI companion">
         <Card>
           <Toggle
             checked={vault.settings.aiConsent}
@@ -153,7 +154,7 @@ function AccessCode() {
   useEffect(() => setCode(getAccessCode()), []);
   return (
     <div className="space-y-2 pb-3">
-      <Label hint="This deployment asks for a private access code before Clarity will reply.">
+      <Label hint="This deployment asks for a private access code before the AI will reply.">
         <span className="inline-flex items-center gap-2">
           <KeyRound size={14} /> Access code
         </span>

@@ -5,12 +5,13 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { ArrowUp, Plus, Trash2, Square } from "lucide-react";
 import { useStore } from "@/lib/store";
 import type { ChatThread, ClarityStance, Directness } from "@/lib/types";
-import { buildContext, streamClarity, type AiError } from "@/lib/ai";
+import { buildContext, companionPayload, streamClarity, type AiError } from "@/lib/ai";
 import { screen, INTERRUPTING } from "@/lib/safety";
 import { useSafety } from "@/components/safety";
 import { AiErrorNote, AiNotice, NotTherapy, useAiReady } from "@/components/ai-gate";
 import { Chips, Segmented, VoiceButton, PageHeader, Button } from "@/components/ui";
 import { cx, dayKey, uid } from "@/lib/util";
+import { CName, useCompanionName } from "@/components/companion-name";
 
 const STANCES: { v: ClarityStance; label: string }[] = [
   { v: "support", label: "Just support me" },
@@ -34,6 +35,7 @@ export default function ChatPage() {
 }
 
 function Chat() {
+  const companionName = useCompanionName();
   const { vault, update } = useStore();
   const safety = useSafety();
   const router = useRouter();
@@ -93,7 +95,7 @@ function Chat() {
         task: "chat",
         stance,
         directness: vault.profile.directness,
-        context: buildContext(vault),
+        context: buildContext(vault), companion: companionPayload(vault),
         safety: flags,
         messages: withUser.messages.map((m) => ({ role: m.role, content: m.content })),
       },
@@ -112,7 +114,7 @@ function Chat() {
     <div className="flex min-h-[calc(100dvh-10rem)] flex-col">
       <PageHeader
         back="/clarity"
-        eyebrow="Clarity"
+        eyebrow={companionName}
         title="Talk it through"
         action={
           <div className="flex gap-1">
@@ -164,7 +166,7 @@ function Chat() {
         ))}
         {busy && <Bubble role="assistant" text={pending || "…"} />}
         {!ready && existing && existing.messages[existing.messages.length - 1]?.role === "user" && (
-          <p className="text-center text-xs text-ink-3">Saved privately. Clarity will be able to reply once AI is connected and on.</p>
+          <p className="text-center text-xs text-ink-3">Saved privately. <CName /> will be able to reply once AI is connected and on.</p>
         )}
         <AiErrorNote error={error} />
         {todayCount > 40 && (
@@ -189,7 +191,7 @@ function Chat() {
             rows={1}
             placeholder="Say anything…"
             className="max-h-40 min-h-[44px] flex-1 resize-none bg-transparent px-3 py-2.5 outline-none"
-            aria-label="Message to Clarity"
+            aria-label="Message"
           />
           <VoiceButton onText={(t) => setInput((v) => (v ? v + " " : "") + t)} />
           {busy ? (

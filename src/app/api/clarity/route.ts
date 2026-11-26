@@ -1,6 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { authorize, aiConfigured, rateLimit } from "@/server/guard";
-import { CLARITY_CORE, DIRECTNESS, STANCE, ROOM_MODES, REWRITE_SYSTEM, IDEA_SYSTEM, THERAPY_SYSTEM, WEEKLY_SYSTEM } from "@/server/prompts";
+import { CLARITY_CORE, DIRECTNESS, STANCE, ROOM_MODES, REWRITE_SYSTEM, IDEA_SYSTEM, THERAPY_SYSTEM, WEEKLY_SYSTEM, VOICE_MODE, MANIFESTO_SYSTEM, companionBlock, type CompanionSettings } from "@/server/prompts";
 
 // Privacy: this route never logs message content. Only error types are logged.
 
@@ -9,7 +9,7 @@ const MAX_CHARS = 60_000;
 
 type Msg = { role: "user" | "assistant"; content: string };
 interface Body {
-  task: "chat" | "room" | "rewrite" | "idea" | "therapy" | "weekly";
+  task: "chat" | "room" | "rewrite" | "idea" | "therapy" | "weekly" | "voice" | "manifesto" | "evening";
   messages?: Msg[];
   text?: string;
   stance?: string;
@@ -18,7 +18,10 @@ interface Body {
   context?: string;
   safety?: string[];
   styles?: string[];
+  companion?: CompanionSettings;
 }
+
+const EVENING_SYSTEM = `Turn one woman's answers to an evening reflection into a short private journal entry in her own first-person voice (4 to 7 sentences). Use only what she wrote; don't invent. Keep her honesty, note one thing she handled well, and end with something to look forward to tomorrow. No headings, no emojis. If she mentions a lapse, be kind and practical, never shaming.`;
 
 const FALLBACK = { betas: ["server-side-fallback-2026-07-01"] as Anthropic.Beta.AnthropicBeta[], fallbacks: "default" as const };
 
@@ -71,7 +74,12 @@ export async function POST(req: Request) {
     switch (body.task) {
       case "chat":
       case "room":
+      case "voice":
         return streamReply(body);
+      case "manifesto":
+        return streamText(MANIFESTO_SYSTEM, String(body.text ?? "").slice(0, MAX_CHARS));
+      case "evening":
+        return streamText(EVENING_SYSTEM, String(body.text ?? "").slice(0, MAX_CHARS));
       case "rewrite":
         return Response.json(await rewrite(body));
       case "idea":
@@ -94,10 +102,13 @@ function streamReply(body: Body) {
   const flagged = !!body.safety?.length;
   const directness = flagged ? DIRECTNESS.gentle : (DIRECTNESS[body.directness ?? "firm"] ?? DIRECTNESS.firm);
   const extra = body.task === "room" ? (ROOM_MODES[body.mode ?? ""] ?? "") : (STANCE[body.stance ?? ""] ?? "");
-  const system = [CLARITY_CORE, directness, extra, aboutHer(body.context)].filter(Boolean).join("\n\n") + safetyBlock(body.safety);
+  const voice = body.task === "voice" ? VOICE_MODE : "";
+  const system =
+    [CLARITY_CORE, companionBlock(body.companion), directness, extra, voice, aboutHer(body.context)].filter(Boolean).join("\n\n") + safetyBlock(body.safety);
   const messages = body.task === "room" ? clip([{ role: "user", content: body.text ?? "" }]) : clip(body.messages ?? []);
   if (!messages.length) return err(400, "Nothing to respond to");
-  return streamMessages(system, messages, flagged ? "low" : "medium");
+  // Voice favours speed: low effort keeps spoken replies quick.
+  return streamMessages(system, messages, flagged || body.task === "voice" ? "low" : "medium", body.task === "voice" ? 1200 : 4000);
 }
 
 function streamText(system: string, text: string) {
@@ -105,10 +116,10 @@ function streamText(system: string, text: string) {
   return streamMessages(system, [{ role: "user", content: text }], "medium");
 }
 
-function streamMessages(system: string, messages: Msg[], effort: "low" | "medium") {
+function streamMessages(system: string, messages: Msg[], effort: "low" | "medium", maxTokens = 4000) {
   const stream = client().beta.messages.stream({
     model: MODEL,
-    max_tokens: 4000,
+    max_tokens: maxTokens,
     system,
     messages,
     output_config: { effort },

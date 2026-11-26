@@ -11,6 +11,7 @@ import { BRAND } from "@/lib/brand";
 import { cx, haptic } from "@/lib/util";
 import { ReminderRunner } from "./reminders";
 import { SyncRunner } from "./sync-runner";
+import { useCompanionName } from "./companion-name";
 
 const TABS = [
   { href: "/today", label: "Today", icon: Sun },
@@ -27,17 +28,23 @@ function ThemeApplier() {
     const root = document.documentElement;
     try {
       localStorage.setItem("elevate.theme", theme);
+      localStorage.setItem("elevate.themeV2", "1");
     } catch {}
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
     const apply = () => {
-      const dark = theme === "dark" || (theme === "system" && mq.matches);
+      const h = new Date().getHours();
+      const dark = theme === "dark" || (theme === "auto" && (h >= 19 || h < 6)) || (theme === "system" && mq.matches);
       root.classList.toggle("dark", dark);
       const meta = document.querySelector('meta[name="theme-color"]');
-      meta?.setAttribute("content", dark ? "#111311" : "#f7f3ec");
+      meta?.setAttribute("content", dark ? "#0f1512" : "#f7f3e9");
     };
     apply();
     mq.addEventListener("change", apply);
-    return () => mq.removeEventListener("change", apply);
+    const t = setInterval(apply, 60_000);
+    return () => {
+      mq.removeEventListener("change", apply);
+      clearInterval(t);
+    };
   }, [theme]);
   useEffect(() => {
     document.documentElement.classList.toggle("reduce-motion", reducedMotion);
@@ -71,7 +78,7 @@ function QuickActions({ open, onClose }: { open: boolean; onClose: () => void })
   };
   const items = [
     { icon: Wine, title: "I want a drink", body: "Pause, breathe, protect what you're building.", on: () => go("/protect") },
-    { icon: MessageCircle, title: "I need to talk", body: "Clarity, or one tap to your people.", on: () => go("/talk") },
+    { icon: MessageCircle, title: "I need to talk", body: "Your companion, or one tap to your people.", on: () => go("/voice") },
     { icon: Wind, title: "Help me regulate", body: "Breathing, grounding, urge surfing.", on: () => go("/regulate") },
     {
       icon: LifeBuoy,
@@ -144,6 +151,7 @@ function TopBar({ minimal }: { minimal?: boolean }) {
 
 function BottomNav() {
   const path = usePathname();
+  const companion = useCompanionName();
   return (
     <nav className="pb-safe fixed inset-x-0 bottom-0 z-40 border-t border-line/60 bg-bg/90 backdrop-blur-xl" aria-label="Main">
       <div className="mx-auto grid h-16 max-w-lg grid-cols-5">
@@ -157,7 +165,7 @@ function BottomNav() {
               className={cx("flex flex-col items-center justify-center gap-1 text-[10.5px] tracking-wide", on ? "text-forest" : "text-ink-3")}
             >
               <t.icon size={20} strokeWidth={on ? 1.9 : 1.5} />
-              {t.label}
+              {t.href === "/clarity" ? companion : t.label}
             </Link>
           );
         })}
@@ -236,6 +244,7 @@ function Gate({ children }: { children: ReactNode }) {
   if (needsOnboarding) return null;
 
   const bare = path === "/welcome";
+  if (path === "/voice") return <>{children}</>; // full-screen; the page has its own Help and close buttons
   return (
     <>
       <TopBar minimal={bare} />

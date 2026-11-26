@@ -6,6 +6,7 @@ import { Card, LinkCard, PageHeader, Section, Button } from "@/components/ui";
 import { SUPPORT_TEMPLATES } from "@/data/messages";
 import { useState } from "react";
 import { cx } from "@/lib/util";
+import { CName } from "@/components/companion-name";
 
 export default function Talk() {
   const { vault } = useStore();
@@ -21,7 +22,7 @@ export default function Talk() {
               <Sparkles size={18} />
             </span>
             <div>
-              <div className="font-medium">Clarity</div>
+              <div className="font-medium"><CName /></div>
               <div className="text-sm text-ink-3">Think it through, vent, or get a straight answer.</div>
             </div>
           </div>

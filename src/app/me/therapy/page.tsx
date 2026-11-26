@@ -187,7 +187,7 @@ export default function TherapyPage() {
                     }
                   }}
                 >
-                  {busy ? "Polishing…" : "Have Clarity tidy this into clear notes"}
+                  {busy ? "Polishing…" : "Tidy this into clear notes"}
                 </Button>
               )}
               <AiErrorNote error={error} />

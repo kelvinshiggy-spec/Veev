@@ -24,6 +24,45 @@ export interface Profile {
   dailyDrinkSpend: number;
   currency: string;
   onboarded: boolean;
+  // 2.0
+  qualities: string[]; // Who I'm Becoming
+  values: string[];
+  familyHopes: string;
+  moneyHopes: string;
+  fitnessGoals: string;
+  soberJoys: string; // positive sober experiences, in her words
+  personalized: boolean; // finished the full personalization (vs quick start)
+  myWorld: string[]; // pets, people, little things her companion can ask about
+  family: string; // parents and family, in her words
+  favMovies: string;
+  favMusic: string;
+}
+
+export type PersonaId = "mila" | "sophie" | "elle" | "luna" | "chloe" | "claire" | "james" | "vylie";
+
+export interface Companion {
+  persona: PersonaId;
+  name: string;
+  voiceURI: string; // device voice; "" = best available
+  rate: number; // 0.8 - 1.2
+  warmth: number; // 1-5
+  enthusiasm: number; // 1-5
+  affectionate: boolean; // terms like "love" in greetings (never claims feelings)
+  greeting: string;
+  subtitles: boolean;
+  handsFree: boolean; // automatic turn-taking
+  saveTranscripts: boolean;
+}
+
+export interface Manifesto {
+  title: string;
+  text: string;
+  approved: boolean;
+  updatedAt: string;
+  photoIds: string[];
+  recordingId?: string;
+  recordingType?: "audio" | "video";
+  inMorning: boolean;
 }
 
 export interface Streak {
@@ -85,7 +124,8 @@ export type EntryKind =
   | "perspective"
   | "pause"
   | "studio"
-  | "reflection";
+  | "reflection"
+  | "voice";
 
 export interface JournalEntry {
   id: ID;
@@ -222,10 +262,19 @@ export interface Reminders {
   privateText: boolean;
   tone: "warm" | "direct" | "minimal";
   lastShown: Record<string, string>;
+  quietStart: string; // HH:MM
+  quietEnd: string;
+  weekend: boolean;
+  topics: string[];
+  maxPerDay: number;
 }
 
 export interface Settings {
-  theme: "system" | "light" | "dark";
+  theme: "auto" | "system" | "light" | "dark";
+  themeV2?: boolean;
+  coverPhotoIds: string[]; // her own photos for the dashboard
+  editions: { morning: boolean; evening: boolean };
+  weather?: { lat: number; lon: number; unit: "f" | "c" }; // opt-in, rounded to ~1 km
   reducedMotion: boolean;
   haptics: boolean;
   aiConsent: boolean;
@@ -261,4 +310,7 @@ export interface Vault {
   customSkills: { id: ID; name: string; steps: string; from: string }[];
   reminders: Reminders;
   settings: Settings;
+  companion: Companion;
+  manifesto: Manifesto;
+  usage: { month: string; aiCalls: number; voiceMinutes: number };
 }

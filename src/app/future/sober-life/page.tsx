@@ -70,7 +70,7 @@ export default function SoberLife() {
 
   return (
     <div>
-      <PageHeader back="/future" eyebrow="Sober life" title="Gaining experiences." subtitle="Make the weekend, the evening, the next adventure something worth staying clear for." />
+      <PageHeader back="/future" eyebrow="Something to look forward to" title="Main character plans only." subtitle="Make the weekend, the evening, the next adventure something worth staying clear for." />
       <Segmented
         value={tab}
         onChange={setTab}

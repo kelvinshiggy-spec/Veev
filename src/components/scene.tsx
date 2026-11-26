@@ -8,16 +8,16 @@ export function Scene({ className = "", tone }: { className?: string; tone?: "ca
   const [pod, setPod] = useState<ReturnType<typeof partOfDay>>("morning");
   useEffect(() => setPod(partOfDay()), []);
   const skies = {
-    morning: ["#f4e6cf", "#e9d3b0", "#d9c7a8"],
-    afternoon: ["#e8eef0", "#dfe7e6", "#cfd9d3"],
+    morning: ["#d7e5ef", "#f6e3d0", "#eac8ae"],
+    afternoon: ["#cfe0ec", "#e3edf3", "#eef1ea"],
     evening: ["#e7c9a8", "#c99a7a", "#7d6a63"],
     night: ["#2b3a3a", "#1d2826", "#141a19"],
   } as const;
   const s = tone === "calm" ? (["#e6ece6", "#d6e0d8", "#c3d0c6"] as const) : skies[pod];
   const dark = pod === "night" && tone !== "calm";
-  const m1 = dark ? "#2e3f39" : "#9fb2a5";
-  const m2 = dark ? "#22312c" : "#5f7d6d";
-  const m3 = dark ? "#16211d" : "#1f3a2e";
+  const m1 = dark ? "#2e3f39" : "#bcd2c4";
+  const m2 = dark ? "#22312c" : "#7fa391";
+  const m3 = dark ? "#16211d" : "#19382c";
   return (
     <svg viewBox="0 0 400 220" preserveAspectRatio="xMidYMid slice" className={className} aria-hidden="true">
       <defs>
@@ -28,7 +28,7 @@ export function Scene({ className = "", tone }: { className?: string; tone?: "ca
         </linearGradient>
       </defs>
       <rect width="400" height="220" fill="url(#sky)" />
-      <circle cx={pod === "evening" ? 300 : 290} cy={pod === "morning" ? 70 : pod === "evening" ? 112 : 58} r="22" fill={dark ? "#e8e1cf" : "#fbf3e2"} opacity={dark ? 0.8 : 0.9} />
+      <circle cx={pod === "evening" ? 300 : 290} cy={pod === "morning" ? 70 : pod === "evening" ? 112 : 58} r="22" fill={dark ? "#e8e1cf" : "#fff8ea"} opacity={dark ? 0.8 : 0.95} />
       <path d="M0 150 L60 105 L95 128 L150 78 L205 125 L250 98 L310 140 L360 110 L400 132 L400 220 L0 220Z" fill={m1} opacity="0.8" />
       <path d="M150 78 L165 92 L158 92 L170 104 L150 96 L135 98Z" fill="#fff" opacity={dark ? 0.15 : 0.55} />
       <path d="M0 172 L45 140 L90 160 L140 122 L190 165 L240 135 L300 170 L350 145 L400 165 L400 220 L0 220Z" fill={m2} />
