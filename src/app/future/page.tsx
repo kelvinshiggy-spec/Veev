@@ -88,6 +88,11 @@ export default function Future() {
             <div className="font-medium">Letters from my sober self</div>
             <div className="text-xs text-ink-3">{vault.letters.length} written</div>
           </LinkCard>
+          <LinkCard href="/goals" className="col-span-2 p-4">
+            <div className="eyebrow">Goals</div>
+            <div className="mt-1 font-serif text-[22px] leading-tight">🎯 This month · 🚀 90 days · 🎓 School</div>
+            <div className="mt-1 text-sm text-ink-3">{vault.goals.filter((g) => !g.completedAt).length ? `${vault.goals.filter((g) => !g.completedAt).length} in progress` : "Tiny steps, daily nudges, proof when you crush it."}</div>
+          </LinkCard>
           <LinkCard href="/edit" className="col-span-2 p-4">
             <div className="eyebrow">The Edit</div>
             <div className="mt-1 font-serif text-[22px] leading-tight">👗 Fashion · 💄 Beauty · 🚗 Cars · ✈️ Travel · 🕯️ Home · 🏋️‍♀️ Fitness</div>

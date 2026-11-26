@@ -281,7 +281,11 @@ function Voice() {
               ? `Hey, first thing: if you're driving, pull over somewhere safe before we talk. Okay. What's got you this upset?`
               : topic && ["fashion", "beauty", "cars", "travel", "home", "fitness"].includes(topic)
                 ? `Ooh, ${topic} talk, my favorite. What are we thinking?`
-                : topic === "today"
+                : topic === "goals"
+                  ? `Okay goal-getter, let's make a plan you'll actually do. Which goal are we working on?`
+                  : topic === "school"
+                    ? `Study buddy reporting for duty! Want me to quiz you, plan your week, or talk through exam nerves?`
+                    : topic === "today"
           ? `Hey ${vault.profile.name || "Veev"}! So what's going on today? Tell me everything and I'll put it on your list.`
           : topic === "holiday"
           ? `Okay, holiday planning! What's the vibe you want, and who's going to be there?`

@@ -276,7 +276,8 @@ export interface Settings {
   themeV2?: boolean;
   coverPhotoIds: string[]; // her own photos for the dashboard
   editions: { morning: boolean; evening: boolean };
-  weather?: { lat: number; lon: number; unit: "f" | "c" }; // opt-in, rounded to ~1 km
+  weather?: { lat: number; lon: number; unit: "f" | "c"; place?: string }; // city-level by default (Dublin, CA)
+  v3?: boolean;
   reducedMotion: boolean;
   haptics: boolean;
   aiConsent: boolean;
@@ -296,6 +297,8 @@ export interface Vault {
   intentions: Record<string, string>;
   todos: Todo[];
   lookbook: LookItem[];
+  goals: Goal[];
+  exams: Exam[];
   quickMood: Record<string, number>; // day -> 1..5 from the Today question
   cravings: CravingEvent[];
   letters: Letter[];
@@ -337,4 +340,34 @@ export interface LookItem {
   note?: string;
   feedback?: string;
   saved?: boolean; // on her mood board
+}
+
+export interface GoalStep {
+  id: string;
+  text: string;
+  done: boolean;
+  date?: string; // "do it by" day, optional
+  doneAt?: string;
+}
+
+export interface Goal {
+  id: string;
+  title: string;
+  emoji: string;
+  horizon: "month" | "90";
+  template?: string;
+  createdAt: string;
+  due: string; // YYYY-MM-DD
+  steps: GoalStep[];
+  money?: { target: number; deposits: { id: string; amount: number; date: string }[] };
+  why?: string;
+  completedAt?: string;
+  proof?: { mediaIds: string[]; note: string; memoryId?: string };
+}
+
+export interface Exam {
+  id: string;
+  title: string; // "Chem 120 midterm"
+  date: string; // YYYY-MM-DD
+  done?: boolean;
 }

@@ -46,6 +46,9 @@ export const AI_MEMORY_KEYS: { key: string; label: string }[] = [
   { key: "patterns", label: "Triggers and impulses you're working on" },
 ];
 
+export const DUBLIN = { lat: 37.7, lon: -121.94, unit: "f" as const, place: "Dublin, CA" };
+const MY_WORLD = ["My cats, Cookies and Codie", "School at DVC, on my way to pharmacy school next fall", "Home in Dublin, CA"];
+
 export function emptyVault(): Vault {
   const now = new Date().toISOString();
   return {
@@ -79,7 +82,7 @@ export function emptyVault(): Vault {
       fitnessGoals: "",
       soberJoys: "",
       personalized: false,
-      myWorld: ["My cats, Cookies and Codie"],
+      myWorld: [...MY_WORLD],
       bpdTriggers: ["Feeling abandoned, ignored or left out", "Push-pull relationships (intense highs, painful lows)"],
       impulses: ["Saying hurtful things during arguments", "Impulse spending", "Driving fast when upset"],
       family: "",
@@ -92,6 +95,8 @@ export function emptyVault(): Vault {
     todos: [],
     lookbook: [],
     quickMood: {},
+    goals: [],
+    exams: [],
     cravings: [],
     letters: [],
     memories: [],
@@ -125,6 +130,8 @@ export function emptyVault(): Vault {
     settings: {
       theme: "auto",
       themeV2: true,
+      v3: true,
+      weather: DUBLIN,
       coverPhotoIds: [],
       editions: { morning: true, evening: true },
       reducedMotion: false,
@@ -164,10 +171,18 @@ export function migrate(v: Partial<Vault>): Vault {
     if (settings.theme === "system") settings.theme = "auto";
     settings.themeV2 = true;
   }
+  // 3.0: local weather defaults to Dublin, CA, and her world includes school and home.
+  let profile = { ...base.profile, ...(v.profile ?? {}), name: v.profile?.name?.trim() || base.profile.name };
+  if (!v.settings?.v3) {
+    if (!settings.weather) settings.weather = DUBLIN;
+    settings.v3 = true;
+    const have = new Set((profile.myWorld ?? []).map((x) => x.toLowerCase()));
+    profile = { ...profile, myWorld: [...(profile.myWorld ?? []), ...MY_WORLD.filter((x) => !have.has(x.toLowerCase()))] };
+  }
   return {
     ...base,
     ...v,
-    profile: { ...base.profile, ...(v.profile ?? {}), name: v.profile?.name?.trim() || base.profile.name },
+    profile,
     therapy: { ...base.therapy, ...(v.therapy ?? {}) },
     reminders: { ...base.reminders, ...(v.reminders ?? {}) },
     companion: { ...base.companion, ...(v.companion ?? {}) },

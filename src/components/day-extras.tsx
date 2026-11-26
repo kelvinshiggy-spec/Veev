@@ -9,7 +9,7 @@ import { cheer } from "./cheer";
 import { NEW_THINGS } from "@/data/new-things";
 import { addTodos } from "@/lib/todos";
 import { makeHabit } from "@/lib/defaults";
-import { cx, dayKey, daysBetween } from "@/lib/util";
+import { cx, dayKey, daysBetween, fmtDate } from "@/lib/util";
 
 export type Moment = "abandoned" | "argument" | "spending" | "driving";
 
@@ -109,6 +109,96 @@ export function SomethingNew() {
           <Repeat size={14} /> {inRoutine ? "In my routine" : "Make it my routine"}
         </button>
       </div>
+    </div>
+  );
+}
+
+/** Vylie's daily goal check: today's one tiny step, a nudge if it's gone quiet, and upcoming exams. */
+export function GoalCheck() {
+  const { vault, update } = useStore();
+  const cn = useCompanionName();
+  const today = dayKey();
+  const active = vault.goals.filter((g) => !g.completedAt).sort((a, b) => a.due.localeCompare(b.due));
+  const exam = vault.exams.filter((e) => !e.done && e.date >= today).sort((a, b) => a.date.localeCompare(b.date))[0];
+  const examIn = exam ? daysBetween(today, exam.date) : 99;
+
+  if (!active.length && examIn > 7)
+    return (
+      <Link href="/goals" className="card flex items-center gap-4 p-5 active:scale-[0.99]">
+        <span className="text-3xl" aria-hidden>🎯</span>
+        <span className="flex-1">
+          <span className="eyebrow block">Goals</span>
+          <span className="block font-serif text-[21px] leading-tight">What&apos;s one thing you want by the end of the month?</span>
+          <span className="text-sm text-ink-3">Ski trip, savings, pharmacy school… we&apos;ll break it into tiny steps.</span>
+        </span>
+      </Link>
+    );
+
+  // Rotate which goal gets the spotlight each day.
+  const g = active.length ? active[daysBetween("2024-01-01", today) % active.length] : undefined;
+  const next = g?.steps.find((s) => !s.done);
+  const lastDone = g?.steps.map((s) => s.doneAt ?? "").sort().pop() || g?.createdAt || "";
+  const quiet = g && lastDone ? daysBetween(lastDone.slice(0, 10), today) >= 3 : false;
+  const left = g ? daysBetween(today, g.due) : 0;
+  const done = g ? g.steps.filter((s) => s.done).length : 0;
+
+  const check = () => {
+    if (!g || !next) return;
+    update((v) => ({ ...v, goals: v.goals.map((x) => (x.id === g.id ? { ...x, steps: x.steps.map((s) => (s.id === next.id ? { ...s, done: true, doneAt: new Date().toISOString() } : s)) } : x)) }));
+    cheer("goal");
+  };
+
+  return (
+    <div className="card p-5">
+      <div className="flex items-center justify-between">
+        <div className="eyebrow">{cn}&apos;s goal check</div>
+        <Link href="/goals" className="text-xs text-ink-3">
+          All goals
+        </Link>
+      </div>
+      {g && (
+        <>
+          <div className="mt-2 flex items-center gap-3">
+            <span className="text-3xl">{g.emoji}</span>
+            <div>
+              <div className="font-serif text-[21px] leading-tight">{g.title}</div>
+              <div className="text-xs text-ink-3">
+                {done}/{g.steps.length} steps · {left > 0 ? `${left} days left` : left === 0 ? "due today" : "still worth finishing"}
+              </div>
+            </div>
+          </div>
+          {next ? (
+            <>
+              <p className="bubble-in mt-3 rounded-2xl rounded-tl-md bg-surface-2 px-3.5 py-2.5 text-[15.5px]">
+                {quiet ? `Bestie, ${g.title.toLowerCase()} has been a little quiet. No guilt! Just one tiny step today: ` : "Today's one step: "}
+                <b className="font-medium">{next.text}</b>
+                {next.date ? ` (by ${fmtDate(next.date, { month: "short", day: "numeric" })})` : ""}
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <button onClick={check} className="flex items-center gap-1.5 rounded-full bg-forest px-3 py-2 text-sm text-on-forest active:scale-95">
+                  <Check size={14} /> Done it!
+                </button>
+                <button
+                  onClick={() => {
+                    update((v) => addTodos(v, [`${g.emoji} ${next.text}`]));
+                    cheer("intention");
+                  }}
+                  className="flex items-center gap-1.5 rounded-full bg-surface-2 px-3 py-2 text-sm"
+                >
+                  <Plus size={14} /> Put it on today&apos;s list
+                </button>
+              </div>
+            </>
+          ) : (
+            <p className="mt-3 text-[15px]">Every step is checked! Go add your proof photo and claim that trophy 🏆</p>
+          )}
+        </>
+      )}
+      {exam && examIn <= 7 && (
+        <div className="mt-3 rounded-2xl border border-line p-3 text-sm">
+          📚 <b className="font-medium">{exam.title}</b> {examIn === 0 ? "is today. You've got this, future pharmacist!" : `in ${examIn} day${examIn === 1 ? "" : "s"}. A little study session today?`}
+        </div>
+      )}
     </div>
   );
 }

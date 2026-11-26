@@ -6,6 +6,7 @@ import { useStore } from "@/lib/store";
 import { Card, PageHeader, Section, Segmented, Toggle } from "@/components/ui";
 import { BRAND } from "@/lib/brand";
 import { requestWeatherLocation } from "@/lib/weather";
+import { DUBLIN } from "@/lib/defaults";
 import { MediaView, PhotoPicker } from "@/components/media";
 import { removeMedia } from "@/lib/media";
 import { useState } from "react";
@@ -78,13 +79,26 @@ export default function Me() {
             onChange={async (on) => {
               setWxNote("");
               if (!on) return set("weather", undefined);
-              const loc = await requestWeatherLocation();
-              if (!loc) return setWxNote("Location wasn't shared, so weather stays off.");
-              set("weather", { ...loc, unit: Intl.DateTimeFormat().resolvedOptions().locale.endsWith("US") ? "f" : "c" });
+              set("weather", DUBLIN);
             }}
             label="Local weather"
-            hint="Uses your rough location (about 1 km) with the free Open-Meteo service. Nothing else is shared."
+            hint={`Weather for ${vault.settings.weather?.place ?? "your current area"} from the free Open-Meteo service. Nothing else is shared.`}
           />
+          {vault.settings.weather && (
+            <button
+              className="pb-2 text-left text-sm text-ink-3 underline-offset-2 hover:underline"
+              onClick={async () => {
+                setWxNote("");
+                if (vault.settings.weather?.place) {
+                  const loc = await requestWeatherLocation();
+                  if (!loc) return setWxNote("Location wasn't shared, so we'll keep using Dublin, CA.");
+                  set("weather", { ...loc, unit: "f" });
+                } else set("weather", DUBLIN);
+              }}
+            >
+              {vault.settings.weather?.place ? "Use my exact location instead" : "Switch back to Dublin, CA"}
+            </button>
+          )}
           {wxNote && <p className="pb-2 text-sm text-rose">{wxNote}</p>}
           <Toggle checked={vault.settings.reducedMotion} onChange={(v) => set("reducedMotion", v)} label="Reduce motion" />
           <Toggle checked={vault.settings.haptics} onChange={(v) => set("haptics", v)} label="Haptic feedback" hint="Where your phone supports it." />

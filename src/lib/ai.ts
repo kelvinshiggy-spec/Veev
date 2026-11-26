@@ -109,6 +109,15 @@ export function buildContext(v: Vault): string {
     if (w && Date.now() - w.at < 3 * 3600_000) weather = `${Math.round(w.temp)}°${w.unit.toUpperCase()}, ${describe(w.code).label.toLowerCase()}`;
   } catch {}
   lines.push(seasonalContext(dayKey(), weather));
+  const goals = (v.goals ?? []).filter((g) => !g.completedAt);
+  if (goals.length)
+    lines.push(
+      `Her goals (she makes plans but can struggle to follow through, so help with one tiny next step): ${goals
+        .map((g) => `${g.title} (${g.horizon === "month" ? "this month" : "90-day"}, due ${g.due}, ${g.steps.filter((s) => s.done).length}/${g.steps.length} steps done${g.steps.find((s) => !s.done) ? `, next: ${g.steps.find((s) => !s.done)!.text}` : ""})`)
+        .join("; ")}`,
+    );
+  const exams = (v.exams ?? []).filter((e) => !e.done && e.date >= dayKey());
+  if (exams.length) lines.push(`Upcoming school dates: ${exams.slice(0, 5).map((e) => `${e.title} on ${e.date}`).join("; ")}`);
   const todos = (v.todos ?? []).filter((t) => t.date === dayKey());
   lines.push(todos.length ? `Her to-do list today: ${todos.map((t) => `${t.done ? "[done] " : ""}${t.text}`).join("; ")}` : "Her to-do list today is empty.");
   return lines.join("\n");

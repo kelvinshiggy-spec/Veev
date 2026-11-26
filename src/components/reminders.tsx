@@ -26,6 +26,7 @@ export async function showNotice(title: string, body: string) {
 export function ReminderRunner() {
   const { vault, update } = useStore();
   const r = vault.reminders;
+  const goals = vault.goals;
 
   useEffect(() => {
     if (!r.enabled) return;
@@ -60,6 +61,11 @@ export function ReminderRunner() {
           title: r.privateText ? BRAND.name : "Friday evening",
           body: r.privateText ? "A moment for you." : "Friday plans? Make tonight something your future self will appreciate.",
         });
+      const goal = goals.find((g) => !g.completedAt && g.steps.some((x) => !x.done));
+      if (goal && inWindow("12:00") && r.lastShown.goal !== today) {
+        const step = goal.steps.find((x) => !x.done)!;
+        due.push({ slot: "goal", title: r.privateText ? BRAND.name : `${goal.emoji} ${goal.title}`, body: r.privateText ? "A moment for you." : `Today's one tiny step: ${step.text}. You've got this.` });
+      }
       if (!due.length) return;
       due.splice(Math.max(0, cap - shownToday));
       due.forEach((d) => showNotice(d.title, d.body));
@@ -71,7 +77,7 @@ export function ReminderRunner() {
     tick();
     const id = setInterval(tick, 60_000);
     return () => clearInterval(id);
-  }, [r, update]);
+  }, [r, goals, update]);
 
   return null;
 }
