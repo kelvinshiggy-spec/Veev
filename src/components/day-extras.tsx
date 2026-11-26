@@ -202,3 +202,47 @@ export function GoalCheck() {
     </div>
   );
 }
+
+/** Quick workout check-off on Today; the full log lives on /fitness. */
+export function WorkoutToday() {
+  const { vault, update } = useStore();
+  const today = dayKey();
+  const f = vault.fitness;
+  const entries = f.log[today] ?? {};
+  const done = f.slots.filter((s) => entries[s.id]?.done).length;
+  return (
+    <div className="card p-5">
+      <div className="flex items-center justify-between">
+        <div className="eyebrow">Today&apos;s workout 💪</div>
+        <Link href="/fitness" className="text-xs text-ink-3">
+          Log details
+        </Link>
+      </div>
+      <div className="mt-3 grid grid-cols-2 gap-2">
+        {f.slots.slice(0, 4).map((s) => {
+          const on = !!entries[s.id]?.done;
+          return (
+            <button
+              key={s.id}
+              onClick={() => {
+                update((v) => ({
+                  ...v,
+                  fitness: { ...v.fitness, log: { ...v.fitness.log, [today]: { ...(v.fitness.log[today] ?? {}), [s.id]: { ...(v.fitness.log[today]?.[s.id] ?? {}), done: !on, mins: v.fitness.log[today]?.[s.id]?.mins ?? s.mins } } } },
+                }));
+                if (!on) cheer("habit");
+              }}
+              className={cx("flex items-center gap-2.5 rounded-2xl border p-3 text-left transition active:scale-95", on ? "border-forest bg-forest text-on-forest" : "border-line bg-surface")}
+            >
+              <span className={cx("grid h-7 w-7 shrink-0 place-items-center rounded-full border-2", on ? "border-on-forest" : "border-line")}>{on && <Check size={14} strokeWidth={3} />}</span>
+              <span className="leading-tight">
+                <span className="block text-[14.5px] font-medium">{s.label}</span>
+                <span className={cx("text-xs", on ? "opacity-80" : "text-ink-3")}>{s.mins} min</span>
+              </span>
+            </button>
+          );
+        })}
+      </div>
+      {done === f.slots.length && f.slots.length > 0 && <p className="bubble-in mt-3 text-sm text-forest">Both done?! Gym girl era is SO real. ✨</p>}
+    </div>
+  );
+}

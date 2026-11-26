@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import type { Vault } from "./types";
 import { accessToken } from "./supabase";
 import { sobrietyStats } from "./sobriety";
-import { dayKey } from "./util";
+import { dayKey, addDays } from "./util";
 
 export interface AiStatus {
   ai: boolean;
@@ -118,6 +118,13 @@ export function buildContext(v: Vault): string {
     );
   const exams = (v.exams ?? []).filter((e) => !e.done && e.date >= dayKey());
   if (exams.length) lines.push(`Upcoming school dates: ${exams.slice(0, 5).map((e) => `${e.title} on ${e.date}`).join("; ")}`);
+  const fl = v.fitness?.log ?? {};
+  const recentW = Object.entries(fl)
+    .filter(([d]) => d >= addDays(dayKey(), -6))
+    .flatMap(([d, slots]) => Object.values(slots).filter((e) => e.done).map((e) => `${d}${e.focus ? ` ${e.focus}` : ""}`));
+  const skills = (v.dbt ?? []).slice(-5).map((e) => `${e.skill}${e.how ? ` (${e.how.slice(0, 80)})` : ""}`);
+  if (skills.length) lines.push(`DBT skills she has practiced recently (celebrate these, suggest using them): ${skills.join("; ")}`);
+  if (recentW.length) lines.push(`Workouts in the last 7 days: ${recentW.join("; ")}`);
   const todos = (v.todos ?? []).filter((t) => t.date === dayKey());
   lines.push(todos.length ? `Her to-do list today: ${todos.map((t) => `${t.done ? "[done] " : ""}${t.text}`).join("; ")}` : "Her to-do list today is empty.");
   return lines.join("\n");

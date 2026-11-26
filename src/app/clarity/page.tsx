@@ -39,6 +39,11 @@ export default function ClarityHub() {
           <div className="font-medium">Companion settings</div>
           <div className="text-xs text-ink-3">Voice, vibe, name</div>
         </LinkCard>
+        <LinkCard href="/dbt" className="col-span-2 !p-4">
+          <div className="eyebrow">DBT toolkit</div>
+          <div className="mt-1 font-serif text-[22px] leading-tight">✨ Your glow-up toolkit</div>
+          <div className="text-sm text-ink-3">Skill of the day, log what you learned, collect your wins</div>
+        </LinkCard>
       </div>
 
       {recent.length > 0 && (

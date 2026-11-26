@@ -14,7 +14,7 @@ import { dayKey, fmtDate, money, partOfDay, pickOfDay, daysBetween, uid, cx } fr
 import { verseFor } from "@/data/verses";
 import { VylieDay } from "@/components/vylie-day";
 import { MoodAsk } from "@/components/mood-ask";
-import { HardMoments, SomethingNew, GoalCheck, momentFor } from "@/components/day-extras";
+import { HardMoments, SomethingNew, GoalCheck, WorkoutToday, momentFor } from "@/components/day-extras";
 import { ENCOURAGEMENT, MORNING_OPENERS, AFFIRMATIONS, HELLOS, HELLO_LINES, DAY_LINES } from "@/data/messages";
 import { holidayNear, season, SEASON_COPY } from "@/lib/seasons";
 import { useWeather, weatherLine, describe } from "@/lib/weather";
@@ -168,6 +168,8 @@ export default function Today() {
       <VylieDay name={name} />
 
       {!gentle && <GoalCheck />}
+
+      <WorkoutToday />
 
       {!gentle && actions}
 

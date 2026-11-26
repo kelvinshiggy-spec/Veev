@@ -281,7 +281,9 @@ function Voice() {
               ? `Hey, first thing: if you're driving, pull over somewhere safe before we talk. Okay. What's got you this upset?`
               : topic && ["fashion", "beauty", "cars", "travel", "home", "fitness"].includes(topic)
                 ? `Ooh, ${topic} talk, my favorite. What are we thinking?`
-                : topic === "goals"
+                : topic === "dbt"
+                  ? `Okay, skills practice! Want to role-play a tough conversation, check the facts on something, or tell me what you learned?`
+                  : topic === "goals"
                   ? `Okay goal-getter, let's make a plan you'll actually do. Which goal are we working on?`
                   : topic === "school"
                     ? `Study buddy reporting for duty! Want me to quiz you, plan your week, or talk through exam nerves?`

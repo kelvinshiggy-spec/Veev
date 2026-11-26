@@ -88,6 +88,10 @@ export default function Future() {
             <div className="font-medium">Letters from my sober self</div>
             <div className="text-xs text-ink-3">{vault.letters.length} written</div>
           </LinkCard>
+          <LinkCard href="/fitness" className="col-span-2 p-4">
+            <div className="eyebrow">Fitness</div>
+            <div className="mt-1 font-serif text-[22px] leading-tight">💪 Gym girl era: daily log, week & month</div>
+          </LinkCard>
           <LinkCard href="/goals" className="col-span-2 p-4">
             <div className="eyebrow">Goals</div>
             <div className="mt-1 font-serif text-[22px] leading-tight">🎯 This month · 🚀 90 days · 🎓 School</div>

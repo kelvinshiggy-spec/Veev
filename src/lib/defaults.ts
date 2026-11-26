@@ -79,7 +79,7 @@ export function emptyVault(): Vault {
       values: [],
       familyHopes: "",
       moneyHopes: "",
-      fitnessGoals: "",
+      fitnessGoals: "Full-body fitness, leaner and stronger, with extra love for glutes, legs and abs",
       soberJoys: "",
       personalized: false,
       myWorld: [...MY_WORLD],
@@ -97,6 +97,14 @@ export function emptyVault(): Vault {
     quickMood: {},
     goals: [],
     exams: [],
+    dbt: [],
+    fitness: {
+      slots: [
+        { id: "weights", label: "Weights", mins: 45, kind: "strength" },
+        { id: "cardio", label: "Walk / cardio", mins: 45, kind: "cardio" },
+      ],
+      log: {},
+    },
     cravings: [],
     letters: [],
     memories: [],
@@ -176,6 +184,7 @@ export function migrate(v: Partial<Vault>): Vault {
   if (!v.settings?.v3) {
     if (!settings.weather) settings.weather = DUBLIN;
     settings.v3 = true;
+    if (!profile.fitnessGoals) profile = { ...profile, fitnessGoals: "Full-body fitness, leaner and stronger, with extra love for glutes, legs and abs" };
     const have = new Set((profile.myWorld ?? []).map((x) => x.toLowerCase()));
     profile = { ...profile, myWorld: [...(profile.myWorld ?? []), ...MY_WORLD.filter((x) => !have.has(x.toLowerCase()))] };
   }
@@ -187,6 +196,7 @@ export function migrate(v: Partial<Vault>): Vault {
     reminders: { ...base.reminders, ...(v.reminders ?? {}) },
     companion: { ...base.companion, ...(v.companion ?? {}) },
     manifesto: { ...base.manifesto, ...(v.manifesto ?? {}) },
+    fitness: { ...base.fitness, ...(v.fitness ?? {}) },
     usage: { ...base.usage, ...(v.usage ?? {}) },
     settings: {
       ...settings,

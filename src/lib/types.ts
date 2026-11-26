@@ -299,6 +299,8 @@ export interface Vault {
   lookbook: LookItem[];
   goals: Goal[];
   exams: Exam[];
+  fitness: Fitness;
+  dbt: DbtEntry[];
   quickMood: Record<string, number>; // day -> 1..5 from the Today question
   cravings: CravingEvent[];
   letters: Letter[];
@@ -370,4 +372,42 @@ export interface Exam {
   title: string; // "Chem 120 midterm"
   date: string; // YYYY-MM-DD
   done?: boolean;
+}
+
+export interface WorkoutSlot {
+  id: string;
+  label: string; // "Weights", "Walk / cardio"
+  mins: number;
+  kind: "strength" | "cardio";
+}
+
+export interface WorkoutEntry {
+  done: boolean;
+  focus?: string; // "Legs & glutes", "Incline walk"
+  mins?: number;
+  notes?: string;
+  exercises?: ExerciseLog[];
+}
+
+export interface ExerciseLog {
+  id: string;
+  name: string;
+  sets: number;
+  reps?: number;
+  weight?: number; // lbs
+  done: boolean;
+}
+
+export interface Fitness {
+  slots: WorkoutSlot[];
+  log: Record<string, Record<string, WorkoutEntry>>; // day -> slot id -> entry
+}
+
+export interface DbtEntry {
+  id: string;
+  skill: string; // skill id from the toolkit, or her own name
+  date: string; // YYYY-MM-DD
+  source: "therapy" | "self" | "app";
+  how: string; // what she learned or how she used it
+  helped?: number; // 1..5
 }
