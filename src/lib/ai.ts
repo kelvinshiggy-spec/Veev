@@ -99,6 +99,8 @@ export function buildContext(v: Vault): string {
   add("tastes", "Music she loves", p.favMusic);
   add("myWorld", "Her world (pets, people and things she'd love to be asked about)", p.myWorld);
   add("becoming", "Her ideal life", p.idealLife);
+  add("patterns", "Her biggest emotional triggers (her words)", p.bpdTriggers);
+  add("patterns", "What she tends to do on impulse when upset", p.impulses);
   if (allow.manifesto && v.manifesto.approved && v.manifesto.text) lines.push(`Her Life Manifesto (approved by her):\n${v.manifesto.text.slice(0, 1500)}`);
   // Date, season, holidays and (if she turned it on) local weather, so the companion stays current.
   let weather: string | undefined;

@@ -43,6 +43,7 @@ export const AI_MEMORY_KEYS: { key: string; label: string }[] = [
   { key: "family", label: "Your parents and family" },
   { key: "tastes", label: "Movies, shows and music you love" },
   { key: "manifesto", label: "Your Life Manifesto (once approved)" },
+  { key: "patterns", label: "Triggers and impulses you're working on" },
 ];
 
 export function emptyVault(): Vault {
@@ -79,6 +80,8 @@ export function emptyVault(): Vault {
       soberJoys: "",
       personalized: false,
       myWorld: ["My cats, Cookies and Codie"],
+      bpdTriggers: ["Feeling abandoned, ignored or left out", "Push-pull relationships (intense highs, painful lows)"],
+      impulses: ["Saying hurtful things during arguments", "Impulse spending", "Driving fast when upset"],
       family: "",
       favMovies: "",
       favMusic: "EDM and Afrobeats",

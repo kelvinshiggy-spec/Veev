@@ -9,6 +9,7 @@ import { useSafety } from "@/components/safety";
 import { useAiReady } from "@/components/ai-gate";
 import { useCompanionName } from "@/components/companion-name";
 import { buildContext, companionPayload, streamClarity } from "@/lib/ai";
+import { cheer } from "@/components/cheer";
 import { addTodos, findTodo, splitTasks } from "@/lib/todos";
 import { screen, INTERRUPTING } from "@/lib/safety";
 import { listenOnce, recognitionSupported, speakAsCompanion, stopSpeaking, speechSupported, type Listener } from "@/lib/voice";
@@ -134,7 +135,7 @@ function Voice() {
           setPhase("idle");
         } else if (kind === "no-speech") {
           if (Date.now() - lastActivity.current > IDLE_TIMEOUT) {
-            setNote("Paused after a quiet couple of minutes. Tap the orb whenever you're ready.");
+            setNote("It got quiet, so I'm just waiting here. Tap the orb whenever you're ready, no rush.");
             setPhase("paused");
           } else if (!mutedRef.current && phaseRef.current === "listening") {
             // Keep the turn open a little longer while she gathers her thoughts.
@@ -243,7 +244,7 @@ function Voice() {
           return nv;
         });
       if (!reply) {
-        const msg = res.error?.kind === "offline" ? "Looks like we're offline. Your guided tools and the Help button still work." : "I lost my train of thought for a sec. Try that again?";
+        const msg = res.error?.kind === "offline" ? "Our connection dropped, but you're not on your own. Your guided tools, your letters and the Help button all work offline." : "Sorry, I lost my train of thought for a sec. I'm still here. Say that again?";
         say(msg, afterReply);
         return;
       }
@@ -272,7 +273,13 @@ function Voice() {
       c.greeting?.trim() ||
       (topic === "craving"
         ? `Hey, I'm right here. Before anything else, talk to me. What's going on?`
-        : topic === "today"
+        : topic === "abandoned"
+          ? `Hey, I'm right here. That feeling of being left is so heavy. Tell me what happened, and we'll look at it together.`
+          : topic === "argument"
+            ? `Okay, deep breath, babe. Before you say anything to them, say it to me first. What's going on?`
+            : topic === "driving"
+              ? `Hey, first thing: if you're driving, pull over somewhere safe before we talk. Okay. What's got you this upset?`
+              : topic === "today"
           ? `Hey ${vault.profile.name || "Veev"}! So what's going on today? Tell me everything and I'll put it on your list.`
           : topic === "holiday"
           ? `Okay, holiday planning! What's the vibe you want, and who's going to be there?`
@@ -323,6 +330,8 @@ function Voice() {
       });
     if (c.saveTranscripts && turns.some((t) => t.role === "user")) saveTranscript();
     router.push("/today");
+    // A warm goodbye instead of a cold cut-off.
+    setTimeout(() => cheer("bye"), 700);
   };
 
   const saveTranscript = () => {

@@ -51,7 +51,7 @@ export function AiErrorNote({ error }: { error?: AiError }) {
   if (!error) return null;
   return (
     <Notice tone="rose">
-      {error.message}
+      {error.message} Everything else in VEEV, including your tools, letters and Help, still works.
       {error.kind === "auth" && (
         <>
           {" "}

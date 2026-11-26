@@ -76,6 +76,19 @@ export default function ProfilePage() {
           </div>
         </Section>
 
+        <Section title="What I'm working on">
+          <div className="space-y-5">
+            <div>
+              <Label hint="What tends to set off big feelings. Only you and your companion see this.">My triggers</Label>
+              <ListEditor value={p.bpdTriggers} onChange={(v) => set("bpdTriggers", v)} placeholder="Add a trigger" />
+            </div>
+            <div>
+              <Label hint="So your companion can catch these moments with you, kindly.">When I'm upset I sometimes…</Label>
+              <ListEditor value={p.impulses} onChange={(v) => set("impulses", v)} placeholder="Add one" />
+            </div>
+          </div>
+        </Section>
+
         <Section title="Sobriety">
           <div className="space-y-5">
             {text("whySober", "Why I want to stay sober")}

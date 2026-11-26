@@ -15,6 +15,9 @@ const LINES = {
   journal: ["Saved. Proud of you for getting that out.", "Writing it down? So healthy of you.", "Got it, safe and private."],
   rodeOut: ["You rode it out! Honestly iconic.", "Craving: 0. You: 1.", "That's real strength, bestie."],
   manifesto: ["Okay this manifesto is everything.", "Signed, sealed, main character."],
+  bye: ["Loved that chat. Go text someone you love too. Talk soon, bestie.", "Proud of you for talking it out. I'm here whenever you want me.", "That was good. Go be iconic. Come back anytime."],
+  newThing: ["Trying new things? That's so you.", "Okay adventurous queen!", "New era unlocked."],
+  routine: ["Added to your routine. Future you says thanks.", "Daily ritual unlocked. We love consistency."],
 } as const;
 
 export type CheerKind = keyof typeof LINES;

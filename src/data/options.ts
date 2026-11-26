@@ -159,6 +159,8 @@ export const EMOTIONS = [
   "Overwhelmed",
   "Restless",
   "Misunderstood",
+  "Abandoned",
+  "Rejected",
   "Hopeful",
 ];
 

@@ -81,6 +81,8 @@ function QuickActions({ open, onClose }: { open: boolean; onClose: () => void })
     { icon: Wine, title: "I want a drink", body: "Pause, breathe, protect what you're building.", on: () => go("/protect") },
     { icon: MessageCircle, title: "I need to talk", body: "Your companion, or one tap to your people.", on: () => go("/voice") },
     { icon: Wind, title: "Help me regulate", body: "Breathing, grounding, urge surfing.", on: () => go("/regulate") },
+    { icon: Hand, title: "I feel abandoned", body: "Breathe, check the facts, reach someone safe.", on: () => go("/steady/abandoned") },
+    { icon: MessageCircle, title: "I'm about to say something", body: "Pause the argument without walking away.", on: () => go("/steady/argument") },
     {
       icon: LifeBuoy,
       title: "I need help",

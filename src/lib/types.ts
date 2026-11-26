@@ -33,6 +33,8 @@ export interface Profile {
   soberJoys: string; // positive sober experiences, in her words
   personalized: boolean; // finished the full personalization (vs quick start)
   myWorld: string[]; // pets, people, little things her companion can ask about
+  bpdTriggers: string[]; // what tends to set off big feelings
+  impulses: string[]; // what she tends to do on impulse when upset
   family: string; // parents and family, in her words
   favMovies: string;
   favMusic: string;

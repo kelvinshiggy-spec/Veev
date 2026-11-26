@@ -13,6 +13,7 @@ import { MediaView } from "@/components/media";
 import { dayKey, fmtDate, money, partOfDay, pickOfDay, daysBetween, uid, cx } from "@/lib/util";
 import { verseFor } from "@/data/verses";
 import { VylieDay } from "@/components/vylie-day";
+import { HardMoments, SomethingNew, momentFor } from "@/components/day-extras";
 import { ENCOURAGEMENT, MORNING_OPENERS, AFFIRMATIONS, HELLOS, HELLO_LINES, DAY_LINES } from "@/data/messages";
 import { holidayNear, season, SEASON_COPY } from "@/lib/seasons";
 import { useWeather, weatherLine, describe } from "@/lib/weather";
@@ -146,6 +147,8 @@ export default function Today() {
       <VylieDay name={name} />
 
       {!gentle && actions}
+
+      <HardMoments highlight={momentFor(checkIn?.emotions)} />
 
       {holiday && (
         <Card className="glow overflow-hidden" >
@@ -325,6 +328,8 @@ export default function Today() {
           </LinkCard>
         </Section>
       )}
+
+      {!gentle && <SomethingNew />}
 
       {/* Habits */}
       {habitsToday.length > 0 && (
