@@ -2,18 +2,17 @@
 
 import { Phone, MessageSquare } from "lucide-react";
 import { CRISIS } from "@/lib/safety";
-import { useSafety, useTreat } from "@/components/safety";
+import { useSafety } from "@/components/safety";
 import { Card, PageHeader, Section } from "@/components/ui";
 import { useStore } from "@/lib/store";
 
 export default function Help() {
   const safety = useSafety();
-  const treat = useTreat();
   const { vault, locked } = useStore();
   const contacts = locked ? [] : vault.contacts.filter((c) => c.phone);
   return (
     <div>
-      <PageHeader eyebrow="Help" title="Okay girl, let's get you some support." subtitle={`Let's get you sorted first, babe, then it's ${treat}. No judgment, no drama, and everything here works offline.`} />
+      <PageHeader eyebrow="Help" title="Okay girl, let's get you some support." subtitle="What's going on? How are you feeling right now? Pick one below and we'll go from there. Everything here works offline." />
 
       <div className="space-y-2">
         {[CRISIS.emergency, CRISIS.lifeline, CRISIS.samhsa, CRISIS.dv].map((c) => (
