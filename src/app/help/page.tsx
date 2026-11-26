@@ -12,12 +12,12 @@ export default function Help() {
   const contacts = locked ? [] : vault.contacts.filter((c) => c.phone);
   return (
     <div>
-      <PageHeader eyebrow="Help" title="You don't have to handle this alone." subtitle="Everything on this page works without internet or AI." />
+      <PageHeader eyebrow="Help" title="Okay girl, let's get you some support." subtitle="Let's get you sorted first, babe, then it's dinner and something sweet. No judgment, no drama, and everything here works offline." />
 
       <div className="space-y-2">
         {[CRISIS.emergency, CRISIS.lifeline, CRISIS.samhsa, CRISIS.dv].map((c) => (
-          <div key={c.number} className="card flex items-center gap-3 p-4">
-            <div className="flex-1">
+          <div key={c.number} className="card flex flex-wrap items-center gap-3 p-4">
+            <div className="min-w-[60%] flex-1">
               <div className="font-medium">{c.label}</div>
               <div className="text-sm leading-snug text-ink-3">{c.note}</div>
             </div>
@@ -26,7 +26,7 @@ export default function Help() {
                 <MessageSquare size={17} />
               </a>
             )}
-            <a href={c.tel} className="inline-flex h-11 items-center gap-2 rounded-full bg-forest px-4 font-medium text-on-forest">
+            <a href={c.tel} className="inline-flex h-11 shrink-0 items-center gap-2 whitespace-nowrap rounded-full bg-forest px-4 font-medium text-on-forest">
               <Phone size={15} /> {c.number}
             </a>
           </div>
@@ -34,7 +34,7 @@ export default function Help() {
       </div>
 
       {contacts.length > 0 && (
-        <Section title="Your people" className="mt-8">
+        <Section title="Your people, one tap away" className="mt-8">
           <div className="space-y-2">
             {contacts.map((c) => (
               <a key={c.id} href={`tel:${c.phone}`} className="card flex items-center justify-between p-4">
@@ -49,19 +49,19 @@ export default function Help() {
         </Section>
       )}
 
-      <Section title="Call 911 for" className="mt-8">
+      <Section title="When to just call 911" className="mt-8">
         <Card>
           <ul className="space-y-1.5 text-[15px] leading-relaxed text-ink-2">
             <li>· Seizures, or shaking with confusion</li>
             <li>· Trouble breathing, chest pain</li>
             <li>· Seeing or hearing things that aren&apos;t there, or severe confusion</li>
             <li>· Someone who can&apos;t be woken up</li>
-            <li>· Being about to hurt yourself, or being in immediate danger</li>
+            <li>· Not feeling safe, or being in any danger</li>
           </ul>
         </Card>
       </Section>
 
-      <Section title="Talk me through it">
+      <Section title="Walk me through it, bestie">
         <div className="grid gap-2">
           {(
             [
@@ -80,7 +80,7 @@ export default function Help() {
       </Section>
 
       <p className="mt-6 text-sm leading-relaxed text-ink-3">
-        VEEV is a self-help companion. It can&apos;t guarantee safety, monitor you, or replace professional care. Numbers shown are for the United States.
+        VEEV is your bestie in an app, not a doctor. It can&apos;t check on you or replace real-life care, but these numbers are real people, 24/7. Numbers are for the United States.
       </p>
     </div>
   );

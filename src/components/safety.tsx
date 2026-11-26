@@ -27,8 +27,8 @@ export function SafetyProvider({ children }: { children: ReactNode }) {
 
 function CallRow({ label, number, href, note, sms }: { label: string; number: string; href: string; note?: string; sms?: string }) {
   return (
-    <div className="flex items-center gap-3 rounded-2xl bg-surface p-4">
-      <div className="min-w-0 flex-1">
+    <div className="flex flex-wrap items-center gap-3 rounded-2xl bg-surface p-4">
+      <div className="min-w-[60%] flex-1">
         <div className="font-medium text-ink">{label}</div>
         <div className="text-sm text-ink-3">{note ?? number}</div>
       </div>
@@ -37,7 +37,7 @@ function CallRow({ label, number, href, note, sms }: { label: string; number: st
           <MessageSquare size={18} />
         </a>
       )}
-      <a href={href} className="inline-flex h-12 items-center gap-2 rounded-full bg-forest px-5 font-medium text-on-forest" aria-label={`Call ${label}`}>
+      <a href={href} className="inline-flex h-12 shrink-0 items-center gap-2 whitespace-nowrap rounded-full bg-forest px-5 font-medium text-on-forest" aria-label={`Call ${label}`}>
         <Phone size={16} /> {number}
       </a>
     </div>
@@ -63,7 +63,7 @@ export function SafetyScreen({ kind, onClose, onPick }: { kind: SafetyKind | "me
     <div className="fixed inset-0 z-[60] overflow-y-auto bg-bg" role="dialog" aria-modal="true" aria-label="Safety support">
       <div className="mx-auto max-w-lg px-5 pb-16 pt-6">
         <div className="mb-6 flex items-center justify-between">
-          <div className="eyebrow">You're not alone</div>
+          <div className="eyebrow">I&apos;ve got you</div>
           <button onClick={onClose} className="grid h-10 w-10 place-items-center rounded-full bg-surface-2" aria-label="Close safety screen">
             <X size={18} />
           </button>
@@ -88,8 +88,8 @@ export function SafetyScreen({ kind, onClose, onPick }: { kind: SafetyKind | "me
           </>
         ) : (
           <>
-            <h1 className="font-serif text-[32px] leading-tight">What's happening right now?</h1>
-            <p className="mt-2 text-ink-2">Tap what fits. Or call straight away below.</p>
+            <h1 className="font-serif text-[32px] leading-tight">Okay girl, let&apos;s get you some help.</h1>
+            <p className="mt-2 text-ink-2">We&apos;ll sort this out, then it&apos;s dinner and something sweet. Tap what fits, or call straight away below.</p>
             <div className="mt-5 space-y-2">
               {MENU.map((m) => (
                 <button
@@ -116,7 +116,7 @@ export function SafetyScreen({ kind, onClose, onPick }: { kind: SafetyKind | "me
         )}
 
         <div className="mt-8">
-          <div className="eyebrow mb-3">Always available (US)</div>
+          <div className="eyebrow mb-3">Real people, 24/7 (US)</div>
           <div className="space-y-2">
             <CallRow {...CRISIS.emergency} href={CRISIS.emergency.tel} />
             <CallRow {...CRISIS.lifeline} href={CRISIS.lifeline.tel} sms={CRISIS.lifeline.sms} />
@@ -126,7 +126,7 @@ export function SafetyScreen({ kind, onClose, onPick }: { kind: SafetyKind | "me
         </div>
 
         <div className="mt-8 rounded-2xl bg-surface-2 p-4 text-sm leading-relaxed text-ink-3">
-          VEEV can't guarantee safety or replace professional care. These numbers work without internet or AI.
+          VEEV is your bestie in an app, not a doctor, so it can't replace real-life care. These numbers work anytime, even offline.
           {!locked && (
             <>
               {" "}

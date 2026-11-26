@@ -85,8 +85,8 @@ function QuickActions({ open, onClose }: { open: boolean; onClose: () => void })
     { icon: MessageCircle, title: "I'm about to say something", body: "Pause the argument without walking away.", on: () => go("/steady/argument") },
     {
       icon: LifeBuoy,
-      title: "I need help",
-      body: "Crisis lines and emergency support. Works offline.",
+      title: "Let's get you some help",
+      body: "Real people, 24/7. No judgment. Works offline.",
       on: () => {
         onClose();
         safety.open("menu");

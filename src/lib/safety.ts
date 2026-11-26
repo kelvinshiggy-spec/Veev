@@ -6,7 +6,7 @@ export type SafetyKind = "suicide" | "psychosis" | "medical" | "withdrawal" | "i
 
 export const CRISIS = {
   emergency: { label: "Emergency", number: "911", tel: "tel:911", note: "Immediate danger, seizures, trouble breathing, can't stay awake, severe confusion." },
-  lifeline: { label: "988 Suicide & Crisis Lifeline", number: "988", tel: "tel:988", sms: "sms:988", note: "Call or text, 24/7. For suicidal thoughts or any mental health crisis." },
+  lifeline: { label: "988 Lifeline", number: "988", tel: "tel:988", sms: "sms:988", note: "Call or text, 24/7, when things feel like too much. Free and private." },
   samhsa: { label: "SAMHSA National Helpline", number: "1-800-662-4357", tel: "tel:18006624357", note: "Free, confidential, 24/7 treatment referral for substance use." },
   dv: { label: "National Domestic Violence Hotline", number: "1-800-799-7233", tel: "tel:18007997233", sms: "sms:88788", note: "If someone is hurting or threatening you. Text START to 88788." },
 };

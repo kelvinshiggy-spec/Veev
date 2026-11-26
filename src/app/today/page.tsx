@@ -107,7 +107,7 @@ export default function Today() {
           <span className="grid h-10 w-10 place-items-center rounded-full bg-rose-soft text-rose">
             <LifeBuoy size={18} strokeWidth={1.7} />
           </span>
-          <span className="text-[14.5px] font-medium leading-tight">I need help</span>
+          <span className="text-[14.5px] font-medium leading-tight">Okay girl, let&apos;s get help</span>
         </button>
       </div>
       <Link href="/regulate" className="flex items-center justify-center gap-2 pt-1 text-sm text-ink-3">
