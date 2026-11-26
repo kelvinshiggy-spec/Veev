@@ -2,17 +2,18 @@
 
 import { Phone, MessageSquare } from "lucide-react";
 import { CRISIS } from "@/lib/safety";
-import { useSafety } from "@/components/safety";
+import { useSafety, useTreat } from "@/components/safety";
 import { Card, PageHeader, Section } from "@/components/ui";
 import { useStore } from "@/lib/store";
 
 export default function Help() {
   const safety = useSafety();
+  const treat = useTreat();
   const { vault, locked } = useStore();
   const contacts = locked ? [] : vault.contacts.filter((c) => c.phone);
   return (
     <div>
-      <PageHeader eyebrow="Help" title="Okay girl, let's get you some support." subtitle="Let's get you sorted first, babe, then it's dinner and something sweet. No judgment, no drama, and everything here works offline." />
+      <PageHeader eyebrow="Help" title="Okay girl, let's get you some support." subtitle={`Let's get you sorted first, babe, then it's ${treat}. No judgment, no drama, and everything here works offline.`} />
 
       <div className="space-y-2">
         {[CRISIS.emergency, CRISIS.lifeline, CRISIS.samhsa, CRISIS.dv].map((c) => (
@@ -65,11 +66,10 @@ export default function Help() {
         <div className="grid gap-2">
           {(
             [
-              ["suicide", "I don't feel safe right now"],
-              ["psychosis", "I'm not sure what's real"],
+              ["medical", "I feel physically unwell or unsafe"],
+              ["psychosis", "I'm seeing or hearing things"],
               ["withdrawal", "I might be in withdrawal"],
               ["intoxicated", "I've been drinking"],
-              ["abuse", "Someone is hurting me"],
             ] as const
           ).map(([k, l]) => (
             <button key={k} onClick={() => safety.open(k)} className="card p-4 text-left text-[15px]">

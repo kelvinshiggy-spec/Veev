@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { Phone, MessageSquare, X } from "lucide-react";
 import { CRISIS, SAFETY_COPY, type SafetyKind } from "@/lib/safety";
@@ -44,19 +44,29 @@ function CallRow({ label, number, href, note, sms }: { label: string; number: st
   );
 }
 
+/** A little something to look forward to that fits the time of day. */
+export function useTreat() {
+  const [h, setH] = useState<number | null>(null);
+  useEffect(() => setH(new Date().getHours()), []);
+  if (h === null) return "something sweet for you";
+  if (h >= 5 && h < 11) return "brunch and an iced coffee";
+  if (h >= 11 && h < 16) return "lunch and a cute little treat";
+  if (h >= 16 && h < 22) return "dinner and something sweet";
+  return "something cozy and a sweet treat";
+}
+
 const MENU: { kind: SafetyKind; label: string }[] = [
-  { kind: "suicide", label: "I don't feel safe right now" },
   { kind: "medical", label: "I feel physically unwell or unsafe" },
   { kind: "psychosis", label: "I'm seeing or hearing things, or I'm not sure what's real" },
   { kind: "withdrawal", label: "I might be in withdrawal" },
   { kind: "intoxicated", label: "I've been drinking" },
-  { kind: "abuse", label: "Someone is hurting or threatening me" },
 ];
 
 export function SafetyScreen({ kind, onClose, onPick }: { kind: SafetyKind | "menu"; onClose: () => void; onPick: (k: SafetyKind) => void }) {
   const { vault, locked } = useStore();
   const contacts = locked ? [] : vault.contacts.filter((c) => c.phone);
   const copy = kind === "menu" ? null : SAFETY_COPY[kind];
+  const treat = useTreat();
   const primary = copy ? CRISIS[copy.primary] : null;
 
   return (
@@ -89,7 +99,7 @@ export function SafetyScreen({ kind, onClose, onPick }: { kind: SafetyKind | "me
         ) : (
           <>
             <h1 className="font-serif text-[32px] leading-tight">Okay girl, let&apos;s get you some help.</h1>
-            <p className="mt-2 text-ink-2">We&apos;ll sort this out, then it&apos;s dinner and something sweet. Tap what fits, or call straight away below.</p>
+            <p className="mt-2 text-ink-2">We&apos;ll sort this out, then it&apos;s {treat}. Tap what fits, or call straight away below.</p>
             <div className="mt-5 space-y-2">
               {MENU.map((m) => (
                 <button
@@ -121,7 +131,6 @@ export function SafetyScreen({ kind, onClose, onPick }: { kind: SafetyKind | "me
             <CallRow {...CRISIS.emergency} href={CRISIS.emergency.tel} />
             <CallRow {...CRISIS.lifeline} href={CRISIS.lifeline.tel} sms={CRISIS.lifeline.sms} />
             <CallRow {...CRISIS.samhsa} href={CRISIS.samhsa.tel} />
-            <CallRow {...CRISIS.dv} href={CRISIS.dv.tel} sms={CRISIS.dv.sms} />
           </div>
         </div>
 
