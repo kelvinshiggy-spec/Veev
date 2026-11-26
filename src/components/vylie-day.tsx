@@ -26,7 +26,7 @@ export function VylieDay({ name }: { name: string }) {
       ? (pickOfDay(ASK_LINES, 31) ?? ASK_LINES[0]).replace("{name}", name)
       : done === list.length
         ? "Whole list done today. Honestly? Iconic."
-        : `${list.length - done} thing${list.length - done === 1 ? "" : "s"} left today. You've got this, ${name}.`;
+        : `${list.length - done} thing${list.length - done === 1 ? "" : "s"} left today. You've got this.`;
 
   const [line, setLine] = useState<string | null>(null);
   const [bump, setBump] = useState(0);

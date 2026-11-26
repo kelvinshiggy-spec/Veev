@@ -141,7 +141,7 @@ export default function Today() {
           <div className="pointer-events-none absolute right-5 top-4 max-w-[46%] text-right font-serif leading-tight text-ink drop-shadow-[0_1px_6px_rgba(247,243,233,0.8)]">
             <div className="text-[10px] font-sans uppercase tracking-[0.25em] text-ink-2">The {fmtDate(now, { month: "long" })} Issue</div>
             <div className="mt-1.5 text-[15px] italic">{s.current > 0 ? `Day ${s.current}: the clear-headed era` : "Day one: a new era"}</div>
-            <div className="mt-1 text-[13px]">Why {name} is this season&apos;s It Girl</div>
+            <div className="mt-1 text-[13px]">Why she&apos;s this season&apos;s It Girl</div>
             <div className="mt-1 text-[13px] italic">{pickOfDay(COVER_LINES, 61)}</div>
           </div>
         )}
@@ -163,7 +163,7 @@ export default function Today() {
       {pod === "morning" && !gentle && <p className="-mt-3 font-serif text-xl italic text-ink-2">{opener}</p>}
       {weather && !gentle && <p className="-mt-4 text-sm text-ink-3">{weatherLine(weather)}</p>}
 
-      <MoodAsk name={name} />
+      <MoodAsk />
 
       <VylieDay name={name} />
 

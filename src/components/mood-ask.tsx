@@ -25,7 +25,7 @@ const OKAY = ["Meh days are valid, babe. What would make today a little cuter?",
 const LOW = ["Aw babe, come here 🤍 What would help you feel even one percent better?", "Thank you for being real with me, love. Soft and gentle today. What do you need?"];
 
 /** The companion's first question on Today: how are you feeling? Then it responds to the answer. */
-export function MoodAsk({ name }: { name: string }) {
+export function MoodAsk() {
   const { vault, update } = useStore();
   const cn = useCompanionName();
   const today = dayKey();
@@ -44,7 +44,7 @@ export function MoodAsk({ name }: { name: string }) {
     cheer("newThing");
   };
 
-  const line = mood === undefined ? `Hiii ${name} 💕 How are we feeling today, pretty girl?` : (mood >= 4 ? pickOfDay(HYPE, 51) : mood === 3 ? pickOfDay(OKAY, 51) : pickOfDay(LOW, 51)) ?? "";
+  const line = mood === undefined ? "Hiii pretty girl 💕 How are we feeling today?" : (mood >= 4 ? pickOfDay(HYPE, 51) : mood === 3 ? pickOfDay(OKAY, 51) : pickOfDay(LOW, 51)) ?? "";
 
   return (
     <div className="card glow p-5">

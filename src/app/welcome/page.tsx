@@ -112,13 +112,13 @@ export default function Welcome() {
         </span>
       </div>
       <div className="eyebrow mb-3">{step.eyebrow}</div>
-      <h1 className="font-serif text-[40px] leading-[1.05]">{step.key === "hello" ? `Hey ${p.name || "Veev"}, okay, this is yours.` : step.title}</h1>
+      <h1 className="font-serif text-[40px] leading-[1.05]">{step.key === "hello" ? `Hey ${p.name || "Veev"}, this is your own private little world.` : step.title}</h1>
 
       <div className="mt-8 space-y-7">
         {step.key === "hello" && (
           <>
             <p className="text-[17px] leading-relaxed text-ink-2">
-              {BRAND.name} is your private little world for mornings, goals, hard moments and really good ones. {BRAND.tagline}
+              For mornings, goals, hard moments and really good ones. {BRAND.tagline}
             </p>
             {editName ? (
               <div>
@@ -127,7 +127,7 @@ export default function Welcome() {
               </div>
             ) : (
               <button onClick={() => setEditName(true)} className="text-sm text-ink-3 underline-offset-2 hover:underline">
-                Not {p.name || "Veev"}? Change name
+                Change name
               </button>
             )}
             {!vault.profile.onboarded && (

@@ -29,8 +29,8 @@ export function findTodo(todos: Todo[], text: string): Todo | undefined {
 }
 
 export const ASK_LINES = [
-  "So {name}, what's going on today?",
-  "Okay {name}, what's the plan today? Tell me everything.",
+  "So, what's going on today?",
+  "Okay babe, what's the plan today? Tell me everything.",
   "What are we getting done today, bestie?",
   "Spill: what's on the agenda today?",
 ];
