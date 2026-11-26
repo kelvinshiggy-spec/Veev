@@ -65,7 +65,7 @@ export default function Help() {
         <div className="grid gap-2">
           {(
             [
-              ["suicide", "I'm thinking about hurting myself"],
+              ["suicide", "I don't feel safe right now"],
               ["psychosis", "I'm not sure what's real"],
               ["withdrawal", "I might be in withdrawal"],
               ["intoxicated", "I've been drinking"],

@@ -45,7 +45,7 @@ function CallRow({ label, number, href, note, sms }: { label: string; number: st
 }
 
 const MENU: { kind: SafetyKind; label: string }[] = [
-  { kind: "suicide", label: "I'm thinking about hurting myself" },
+  { kind: "suicide", label: "I don't feel safe right now" },
   { kind: "medical", label: "I feel physically unwell or unsafe" },
   { kind: "psychosis", label: "I'm seeing or hearing things, or I'm not sure what's real" },
   { kind: "withdrawal", label: "I might be in withdrawal" },

@@ -19,7 +19,7 @@ const RED_FLAGS = [
   "Hard to stay awake",
   "Vomiting a lot, or blood",
   "I'm injured",
-  "Thinking about hurting myself",
+  "I don't feel safe right now",
 ];
 
 export default function FindYourWayBack() {
@@ -49,7 +49,7 @@ export default function FindYourWayBack() {
             {flags.length > 0 && (
               <div className="mt-4">
                 <Notice tone="rose">
-                  {flags.includes("Thinking about hurting myself")
+                  {flags.includes("I don't feel safe right now")
                     ? "Please reach someone now. 988 is open 24/7, by call or text. If you might act on it, call 911."
                     : "This needs medical help. Please call 911 now, or ask someone with you to call."}
                 </Notice>
@@ -58,7 +58,7 @@ export default function FindYourWayBack() {
                   size="lg"
                   className="mt-3"
                   variant="danger"
-                  onClick={() => safety.open(flags.includes("Thinking about hurting myself") && flags.length === 1 ? "suicide" : "medical")}
+                  onClick={() => safety.open(flags.includes("I don't feel safe right now") && flags.length === 1 ? "suicide" : "medical")}
                 >
                   Get help now
                 </Button>
