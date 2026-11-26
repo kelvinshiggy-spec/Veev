@@ -12,6 +12,7 @@ import { cx, haptic } from "@/lib/util";
 import { ReminderRunner } from "./reminders";
 import { SyncRunner } from "./sync-runner";
 import { CheerBubble } from "./cheer";
+import { QuickChat } from "./quick-chat";
 import { useCompanionName } from "./companion-name";
 
 const TABS = [
@@ -256,6 +257,7 @@ function Gate({ children }: { children: ReactNode }) {
       {!bare && <ReminderRunner />}
       <SyncRunner />
       {!bare && <CheerBubble />}
+      {!bare && <QuickChat />}
     </>
   );
 }
