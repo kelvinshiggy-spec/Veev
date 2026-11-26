@@ -167,7 +167,7 @@ export function migrate(v: Partial<Vault>): Vault {
   return {
     ...base,
     ...v,
-    profile: { ...base.profile, ...(v.profile ?? {}) },
+    profile: { ...base.profile, ...(v.profile ?? {}), name: v.profile?.name?.trim() || base.profile.name },
     therapy: { ...base.therapy, ...(v.therapy ?? {}) },
     reminders: { ...base.reminders, ...(v.reminders ?? {}) },
     companion: { ...base.companion, ...(v.companion ?? {}) },

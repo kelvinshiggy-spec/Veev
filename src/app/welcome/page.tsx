@@ -38,6 +38,7 @@ const STEP_KEY = "veev.onboardStep";
 export default function Welcome() {
   const { vault, update } = useStore();
   const router = useRouter();
+  const [editName, setEditName] = useState(false);
   const [mode, setMode] = useState<"quick" | "full">(vault.profile.onboarded ? "full" : "quick");
   const steps = STEPS.filter((s) => mode === "full" || s.quick);
   const [i, setI] = useState(0);
@@ -111,7 +112,7 @@ export default function Welcome() {
         </span>
       </div>
       <div className="eyebrow mb-3">{step.eyebrow}</div>
-      <h1 className="font-serif text-[40px] leading-[1.05]">{step.title}</h1>
+      <h1 className="font-serif text-[40px] leading-[1.05]">{step.key === "hello" ? `Hey ${p.name || "Veev"}, okay, this is yours.` : step.title}</h1>
 
       <div className="mt-8 space-y-7">
         {step.key === "hello" && (
@@ -119,10 +120,16 @@ export default function Welcome() {
             <p className="text-[17px] leading-relaxed text-ink-2">
               {BRAND.name} is your private little world for mornings, goals, hard moments and really good ones. {BRAND.tagline}
             </p>
-            <div>
-              <Label>What should we call you?</Label>
-              <Input value={p.name} onChange={(e) => set("name", e.target.value)} placeholder="Your name" autoFocus />
-            </div>
+            {editName ? (
+              <div>
+                <Label>Your name</Label>
+                <Input value={p.name} onChange={(e) => set("name", e.target.value)} placeholder="Veev" autoFocus />
+              </div>
+            ) : (
+              <button onClick={() => setEditName(true)} className="text-sm text-ink-3 underline-offset-2 hover:underline">
+                Not {p.name || "Veev"}? Change name
+              </button>
+            )}
             {!vault.profile.onboarded && (
               <div>
                 <Label hint="Answers save as you go. You can always finish later.">How do you want to start?</Label>
