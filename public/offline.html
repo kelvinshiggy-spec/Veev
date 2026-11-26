@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VEEV · Help</title>
+<style>
+  :root { --bg:#f7f3ec; --ink:#23231f; --ink2:#5d5a52; --forest:#1f3a2e; --on:#f7f3ec; --line:#e4dccd; --surface:#fffdf9; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#111311; --ink:#ede7dc; --ink2:#b9b2a5; --forest:#7fae95; --on:#0f1a14; --line:#2d322d; --surface:#1a1d1a; } }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.5 ui-sans-serif, system-ui, -apple-system, sans-serif; }
+  main { max-width:30rem; margin:0 auto; padding:32px 16px 48px; }
+  h1 { font-family: Georgia, serif; font-weight:400; font-size:32px; line-height:1.1; margin:0 0 8px; }
+  p { color:var(--ink2); }
+  a.call { display:flex; justify-content:space-between; align-items:center; gap:12px; text-decoration:none; color:var(--ink); background:var(--surface); border:1px solid var(--line); border-radius:18px; padding:16px; margin:8px 0; }
+  a.call b { background:var(--forest); color:var(--on); border-radius:999px; padding:10px 16px; font-weight:500; white-space:nowrap; }
+  .circle { width:160px; height:160px; border-radius:50%; background:rgba(127,174,149,.25); margin:28px auto; animation:b 10s ease-in-out infinite; }
+  @keyframes b { 0%,100% { transform:scale(.7) } 40%,50% { transform:scale(1) } }
+  @media (prefers-reduced-motion: reduce) { .circle { animation:none } }
+</style>
+</head>
+<body>
+<main>
+  <h1>You're offline, and help is still here.</h1>
+  <p>These numbers work without internet.</p>
+  <a class="call" href="tel:911"><span>Emergency<br><small>Immediate danger, seizures, trouble breathing</small></span><b>911</b></a>
+  <a class="call" href="tel:988"><span>Suicide &amp; Crisis Lifeline<br><small>Call or text, 24/7</small></span><b>988</b></a>
+  <a class="call" href="tel:18006624357"><span>SAMHSA Helpline<br><small>Substance use treatment referral</small></span><b>Call</b></a>
+  <a class="call" href="tel:18007997233"><span>Domestic Violence Hotline<br><small>Text START to 88788</small></span><b>Call</b></a>
+  <div class="circle" aria-hidden="true"></div>
+  <p style="text-align:center">Breathe in as the circle grows. Out, slowly, as it shrinks.</p>
+</main>
+</body>
+</html>
