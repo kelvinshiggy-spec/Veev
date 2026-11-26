@@ -13,6 +13,7 @@ import { MediaView } from "@/components/media";
 import { dayKey, fmtDate, money, partOfDay, pickOfDay, daysBetween, uid, cx } from "@/lib/util";
 import { verseFor } from "@/data/verses";
 import { VylieDay } from "@/components/vylie-day";
+import { MoodAsk } from "@/components/mood-ask";
 import { HardMoments, SomethingNew, momentFor } from "@/components/day-extras";
 import { ENCOURAGEMENT, MORNING_OPENERS, AFFIRMATIONS, HELLOS, HELLO_LINES, DAY_LINES } from "@/data/messages";
 import { holidayNear, season, SEASON_COPY } from "@/lib/seasons";
@@ -20,6 +21,15 @@ import { useWeather, weatherLine, describe } from "@/lib/weather";
 import { useSafety } from "@/components/safety";
 import { CName } from "@/components/companion-name";
 import { recommendSkill } from "@/data/studio";
+
+const COVER_LINES = [
+  "The Hot 100: you're No. 1",
+  "Inside her glow-up",
+  "Main character energy, decoded",
+  "Clear skin, clear head, clear vibes",
+  "The art of being unbothered",
+  "Her rules for a beautiful life",
+]
 
 export default function Today() {
   const { vault, update } = useStore();
@@ -39,7 +49,8 @@ export default function Today() {
   const greet = helloTpl.replace("{name}", name).replace("{day}", dayName);
   const helloLine = (helloTpl.includes("{day}") ? pickOfDay(DAY_LINES[weekday], 25) : pickOfDay(HELLO_LINES, 23)) ?? "";
   const checkIn = vault.checkIns.filter((c) => c.date === today).sort((a, b) => b.at.localeCompare(a.at))[0];
-  const gentle = !!checkIn && (checkIn.mood <= 2 || checkIn.craving >= 6);
+  const quick = vault.quickMood?.[today];
+  const gentle = (!!checkIn && (checkIn.mood <= 2 || checkIn.craving >= 6)) || (!checkIn && quick !== undefined && quick <= 2);
   const good = !!checkIn && checkIn.mood >= 4 && checkIn.craving <= 2;
   const intention = vault.intentions[today] ?? "";
   const [intentDraft, setIntentDraft] = useState(intention);
@@ -126,6 +137,14 @@ export default function Today() {
           <Scene className="h-[240px] w-full" tone={gentle ? "calm" : undefined} />
         )}
         <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-bg to-transparent" />
+        {!gentle && now && (
+          <div className="pointer-events-none absolute right-5 top-4 max-w-[46%] text-right font-serif leading-tight text-ink drop-shadow-[0_1px_6px_rgba(247,243,233,0.8)]">
+            <div className="text-[10px] font-sans uppercase tracking-[0.25em] text-ink-2">The {fmtDate(now, { month: "long" })} Issue</div>
+            <div className="mt-1.5 text-[15px] italic">{s.current > 0 ? `Day ${s.current}: the clear-headed era` : "Day one: a new era"}</div>
+            <div className="mt-1 text-[13px]">Why {name} is this season&apos;s It Girl</div>
+            <div className="mt-1 text-[13px] italic">{pickOfDay(COVER_LINES, 61)}</div>
+          </div>
+        )}
         <div className="absolute inset-x-5 bottom-3">
           <div className="eyebrow !text-ink-2">{now ? fmtDate(now, { weekday: "long", month: "long", day: "numeric" }) : " "}</div>
           <h1 className="mt-1 font-serif text-[40px] leading-none text-ink">
@@ -143,6 +162,8 @@ export default function Today() {
 
       {pod === "morning" && !gentle && <p className="-mt-3 font-serif text-xl italic text-ink-2">{opener}</p>}
       {weather && !gentle && <p className="-mt-4 text-sm text-ink-3">{weatherLine(weather)}</p>}
+
+      <MoodAsk name={name} />
 
       <VylieDay name={name} />
 
@@ -210,7 +231,7 @@ export default function Today() {
         <Card className="border-forest/30 bg-forest-soft">
           <div className="font-serif text-2xl">Let's keep today simple.</div>
           <p className="mt-1 text-[15px] leading-relaxed text-ink-2">
-            You checked in feeling {checkIn.mood <= 2 ? "low" : "a strong pull"}. That's honest, and it's enough. Here's what's closest to hand.
+            {checkIn ? `You checked in feeling ${checkIn.mood <= 2 ? "low" : "a strong pull"}. That's honest, and it's enough.` : "Soft day today, and that's okay."} Here's what's closest to hand.
           </p>
           <div className="mt-4">{actions}</div>
         </Card>
@@ -330,6 +351,17 @@ export default function Today() {
       )}
 
       {!gentle && <SomethingNew />}
+
+      {!gentle && (
+        <Link href="/edit" className="card glow flex items-center gap-4 p-5 active:scale-[0.99]">
+          <span className="text-3xl" aria-hidden>👗</span>
+          <span className="flex-1">
+            <span className="eyebrow block">The Edit</span>
+            <span className="block font-serif text-[22px] leading-tight">Fashion, beauty, cars, travel & more</span>
+            <span className="text-sm text-ink-3">Fit checks, mood boards and today&apos;s picks</span>
+          </span>
+        </Link>
+      )}
 
       {/* Habits */}
       {habitsToday.length > 0 && (

@@ -9,7 +9,7 @@ const MAX_CHARS = 60_000;
 
 type Msg = { role: "user" | "assistant"; content: string };
 interface Body {
-  task: "chat" | "room" | "rewrite" | "idea" | "therapy" | "weekly" | "voice" | "manifesto" | "evening";
+  task: "chat" | "room" | "rewrite" | "idea" | "therapy" | "weekly" | "voice" | "manifesto" | "evening" | "style";
   messages?: Msg[];
   text?: string;
   stance?: string;
@@ -19,9 +19,18 @@ interface Body {
   safety?: string[];
   styles?: string[];
   companion?: CompanionSettings;
+  images?: string[]; // base64 JPEG, style task only
 }
 
 const EVENING_SYSTEM = `Turn one woman's answers to an evening reflection into a short private journal entry in her own first-person voice (4 to 7 sentences). Use only what she wrote; don't invent. Keep her honesty, note one thing she handled well, and end with something to look forward to tomorrow. No headings, no emojis. If she mentions a lapse, be kind and practical, never shaming.`;
+
+const STYLE_SYSTEM = `You're giving fun, honest, classy style feedback from her photos, like a stylish girl bestie in a fashion magazine.
+- Talk about clothes, colors, fit, styling, accessories, hair, makeup, rooms or cars: whatever the photo shows. Be specific to what you actually see; if something is unclear, say so instead of guessing.
+- Never comment negatively on her body, weight, shape or skin, and never suggest changing her body. Style serves her, not the other way round.
+- Lead with what's working, then one to three easy upgrades. Suggest generic pieces ("a gold chain", "a camel coat"), not prices, stores or what's in stock.
+- Never guess who a person is. Don't comment on anyone else in the photo beyond what they're wearing.
+- If the photo shows alcohol, don't make it the focus; you can suggest a cute mocktail swap lightly.
+- Keep it to roughly 80 to 180 words. Short paragraphs; a few dashes for ideas are fine. Playful Gen Z bestie voice, classy, no emojis overload (one is fine).`;
 
 const FALLBACK = { betas: ["server-side-fallback-2026-07-01"] as Anthropic.Beta.AnthropicBeta[], fallbacks: "default" as const };
 
@@ -76,6 +85,8 @@ export async function POST(req: Request) {
       case "room":
       case "voice":
         return streamReply(body);
+      case "style":
+        return streamStyle(body);
       case "manifesto":
         return streamText(MANIFESTO_SYSTEM, String(body.text ?? "").slice(0, MAX_CHARS));
       case "evening":
@@ -111,12 +122,23 @@ function streamReply(body: Body) {
   return streamMessages(system, messages, flagged || body.task === "voice" ? "low" : "medium", body.task === "voice" ? 1200 : 4000);
 }
 
+function streamStyle(body: Body) {
+  const imgs = (body.images ?? []).filter((x) => typeof x === "string" && /^[A-Za-z0-9+/=]+$/.test(x.slice(0, 200)) && x.length < 2_500_000).slice(0, 4);
+  if (!imgs.length) return err(400, "No photo");
+  const system = [CLARITY_CORE, companionBlock(body.companion), STYLE_SYSTEM, aboutHer(body.context)].join("\n\n");
+  const content: Anthropic.Beta.BetaContentBlockParam[] = [
+    ...imgs.map((data) => ({ type: "image" as const, source: { type: "base64" as const, media_type: "image/jpeg" as const, data } })),
+    { type: "text", text: `${String(body.mode ?? "Give me your honest take").slice(0, 300)}${body.text?.trim() ? `\n\nMy note: ${String(body.text).slice(0, 1000)}` : ""}` },
+  ];
+  return streamMessages(system, [{ role: "user", content }], "low", 1500);
+}
+
 function streamText(system: string, text: string) {
   if (!text.trim()) return err(400, "Nothing to summarize");
   return streamMessages(system, [{ role: "user", content: text }], "medium");
 }
 
-function streamMessages(system: string, messages: Msg[], effort: "low" | "medium", maxTokens = 4000) {
+function streamMessages(system: string, messages: Anthropic.Beta.BetaMessageParam[], effort: "low" | "medium", maxTokens = 4000) {
   const stream = client().beta.messages.stream({
     model: MODEL,
     max_tokens: maxTokens,

@@ -88,6 +88,11 @@ export default function Future() {
             <div className="font-medium">Letters from my sober self</div>
             <div className="text-xs text-ink-3">{vault.letters.length} written</div>
           </LinkCard>
+          <LinkCard href="/edit" className="col-span-2 p-4">
+            <div className="eyebrow">The Edit</div>
+            <div className="mt-1 font-serif text-[22px] leading-tight">👗 Fashion · 💄 Beauty · 🚗 Cars · ✈️ Travel · 🕯️ Home · 🏋️‍♀️ Fitness</div>
+            <div className="mt-1 text-sm text-ink-3">Your little lifestyle magazine, with fit checks from your photos.</div>
+          </LinkCard>
           <LinkCard href="/future/vibes" className="col-span-2 p-4">
             <Music size={18} className="mb-3 text-forest" />
             <div className="font-medium">Watch & listen</div>

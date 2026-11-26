@@ -90,6 +90,8 @@ export function emptyVault(): Vault {
     checkIns: [],
     intentions: {},
     todos: [],
+    lookbook: [],
+    quickMood: {},
     cravings: [],
     letters: [],
     memories: [],

@@ -295,6 +295,8 @@ export interface Vault {
   checkIns: CheckIn[];
   intentions: Record<string, string>;
   todos: Todo[];
+  lookbook: LookItem[];
+  quickMood: Record<string, number>; // day -> 1..5 from the Today question
   cravings: CravingEvent[];
   letters: Letter[];
   memories: Memory[];
@@ -325,4 +327,14 @@ export interface Todo {
   done: boolean;
   doneAt?: string;
   from?: "me" | "companion";
+}
+
+export interface LookItem {
+  id: string;
+  mediaId: string;
+  tab: string; // fashion, beauty, home…
+  createdAt: string;
+  note?: string;
+  feedback?: string;
+  saved?: boolean; // on her mood board
 }
