@@ -6,7 +6,7 @@ import { emptyVault, migrate } from "./defaults";
 import { deriveKey, newSalt, seal, unseal, unb64, type Sealed } from "./crypto";
 import { clearAllMedia } from "./media";
 
-const KEY = "elevate.vault.v1";
+const KEY = "veev.vault.v1";
 
 type Saved = { enc: false; data: Vault } | { enc: true; sealed: Sealed };
 
@@ -71,9 +71,9 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       } else {
         localStorage.setItem(KEY, JSON.stringify({ enc: false, data: v } satisfies Saved));
       }
-      window.dispatchEvent(new CustomEvent("elevate:saved"));
+      window.dispatchEvent(new CustomEvent("veev:saved"));
     } catch (e) {
-      console.warn("ELEVATE: could not save locally", e instanceof Error ? e.name : "error");
+      console.warn("VEEV: could not save locally", e instanceof Error ? e.name : "error");
     }
   }, []);
 
@@ -191,7 +191,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     keyRef.current = null;
     try {
       Object.keys(localStorage)
-        .filter((k) => k.startsWith("elevate."))
+        .filter((k) => k.startsWith("veev."))
         .forEach((k) => localStorage.removeItem(k));
     } catch {}
     await clearAllMedia();

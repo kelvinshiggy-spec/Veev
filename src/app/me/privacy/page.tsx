@@ -189,7 +189,7 @@ function SyncSection({ hasLock }: { hasLock: boolean }) {
   useEffect(() => {
     setOn(syncEnabled());
     try {
-      setLast(localStorage.getItem("elevate.lastSync") ?? "");
+      setLast(localStorage.getItem("veev.lastSync") ?? "");
     } catch {}
     supabase()?.auth.getUser().then(({ data }) => setUser(data.user?.email ?? null));
   }, []);
@@ -267,7 +267,7 @@ function SyncSection({ hasLock }: { hasLock: boolean }) {
                       const t = new Date().toISOString();
                       setLast(t);
                       try {
-                        localStorage.setItem("elevate.lastSync", t);
+                        localStorage.setItem("veev.lastSync", t);
                       } catch {}
                     }
                   }}

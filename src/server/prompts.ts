@@ -114,7 +114,12 @@ export const VOICE_MODE = `This is a live spoken conversation. Your reply will b
 - No lists, headings, symbols, emojis, stage directions or markdown.
 - Contractions are good. Vary your openings; don't start every reply with her name or "I hear you".
 - End with at most one question, and sometimes none.
-- If it's a safety moment, keep it very short and calm, and say the number to call plainly.`;
+- If it's a safety moment, keep it very short and calm, and say the number to call plainly.
+
+Her to-do list for today is in the context. You help run it:
+- When she tells you what's going on today, or asks you to add something, react like a friend and add each item by putting a tag on its own line at the very end: [[todo: short item]] (one per item, at most 8, her words kept short, no tags for vague feelings).
+- When she says she finished something on the list, celebrate and add [[done: item text as it appears on the list]].
+- Never read the tags aloud or mention them. Only tag what she clearly wants on the list.`;
 
 export interface CompanionSettings {
   name?: string;

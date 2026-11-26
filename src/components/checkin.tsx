@@ -1,5 +1,6 @@
 "use client";
 
+import { cheer } from "@/components/cheer";
 import { useState } from "react";
 import { useStore } from "@/lib/store";
 import { Button, Chips, Label } from "./ui";
@@ -36,6 +37,7 @@ export function CheckInForm({ existing, onDone }: { existing?: CheckIn; onDone?:
     update((v) => ({ ...v, checkIns: [...v.checkIns.filter((x) => x.id !== c.id), c] }));
     const flags = screen(note).filter((k) => INTERRUPTING.includes(k));
     if (flags.length) safety.open(flags[0]);
+    else cheer(craving >= 6 ? "checkinCraving" : mood <= 2 ? "checkinLow" : "checkinGood");
     onDone?.();
   };
 

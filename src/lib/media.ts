@@ -1,14 +1,59 @@
 // Private media (voice notes, videos, photos) stays on this device in IndexedDB.
-const DB = "elevate-media";
+const DB = "veev-media";
 const STORE = "blobs";
 
-function db(): Promise<IDBDatabase> {
+// Older versions stored media under a previous name; move it over once.
+const OLD_DB = "elevate-media";
+const MOVED = "veev.mediaMoved";
+
+function open(name: string): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
-    const req = indexedDB.open(DB, 1);
+    const req = indexedDB.open(name, 1);
     req.onupgradeneeded = () => req.result.createObjectStore(STORE);
     req.onsuccess = () => resolve(req.result);
     req.onerror = () => reject(req.error);
   });
+}
+
+async function moveOldMedia(to: IDBDatabase) {
+  try {
+    if (localStorage.getItem(MOVED)) return;
+    const from = await open(OLD_DB);
+    const entries = await new Promise<[IDBValidKey, Blob][]>((res, rej) => {
+      const out: [IDBValidKey, Blob][] = [];
+      const r = from.transaction(STORE, "readonly").objectStore(STORE).openCursor();
+      r.onsuccess = () => {
+        const c = r.result;
+        if (!c) return res(out);
+        out.push([c.key, c.value as Blob]);
+        c.continue();
+      };
+      r.onerror = () => rej(r.error);
+    });
+    from.close();
+    if (entries.length) {
+      await new Promise<void>((res, rej) => {
+        const tx = to.transaction(STORE, "readwrite");
+        const st = tx.objectStore(STORE);
+        entries.forEach(([k, v]) => st.put(v, k));
+        tx.oncomplete = () => res();
+        tx.onerror = () => rej(tx.error);
+      });
+    }
+    localStorage.setItem(MOVED, "1");
+    indexedDB.deleteDatabase(OLD_DB);
+  } catch {}
+}
+
+let ready: Promise<IDBDatabase> | null = null;
+function db(): Promise<IDBDatabase> {
+  if (!ready)
+    ready = open(DB).then(async (d) => {
+      await moveOldMedia(d);
+      return d;
+    });
+  ready.catch(() => (ready = null));
+  return ready;
 }
 
 export async function putMedia(id: string, blob: Blob) {

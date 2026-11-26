@@ -1,4 +1,4 @@
--- VEEV / ELEVATE database schema (Supabase Postgres)
+-- VEEV database schema (Supabase Postgres)
 -- Run this once in the Supabase SQL editor.
 --
 -- Design: the app is local-first. The only thing stored in the cloud is an

@@ -51,7 +51,7 @@ export function emptyVault(): Vault {
     version: 1,
     updatedAt: now,
     profile: {
-      name: "",
+      name: "Veev",
       becoming: "",
       idealLife: "",
       happiness: "",
@@ -86,6 +86,7 @@ export function emptyVault(): Vault {
     streaks: [],
     checkIns: [],
     intentions: {},
+    todos: [],
     cravings: [],
     letters: [],
     memories: [],

@@ -7,7 +7,7 @@ import type { Sealed } from "./crypto";
 // leaves the device, so the database owner cannot read journals, letters or conversations.
 // Photos, voice notes and videos stay on the device and are not synced.
 
-const FLAG = "elevate.sync";
+const FLAG = "veev.sync";
 export const syncEnabled = () => {
   try {
     return localStorage.getItem(FLAG) === "1";

@@ -1,5 +1,6 @@
 "use client";
 
+import { cheer } from "@/components/cheer";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { Wine, Mic, LifeBuoy, Wind, ChevronRight, Calendar, Sparkles, Lightbulb, BookOpen, Check, Sun, Moon, Feather, Music, CloudSun, Cloud, CloudRain, CloudSnow, CloudLightning, CloudFog } from "lucide-react";
@@ -11,7 +12,8 @@ import { Scene } from "@/components/scene";
 import { MediaView } from "@/components/media";
 import { dayKey, fmtDate, money, partOfDay, pickOfDay, daysBetween, uid, cx } from "@/lib/util";
 import { verseFor } from "@/data/verses";
-import { ENCOURAGEMENT, MORNING_OPENERS, AFFIRMATIONS } from "@/data/messages";
+import { VylieDay } from "@/components/vylie-day";
+import { ENCOURAGEMENT, MORNING_OPENERS, AFFIRMATIONS, HELLOS, HELLO_LINES, DAY_LINES } from "@/data/messages";
 import { holidayNear, season, SEASON_COPY } from "@/lib/seasons";
 import { useWeather, weatherLine, describe } from "@/lib/weather";
 import { useSafety } from "@/components/safety";
@@ -28,9 +30,13 @@ export default function Today() {
 
   const today = dayKey();
   const s = sobrietyStats(vault, today);
-  const name = vault.profile.name || "you";
+  const name = vault.profile.name || "Veev";
   const pod = now ? partOfDay(now) : "morning";
-  const greet = { morning: "Good morning", afternoon: "Good afternoon", evening: "Good evening", night: "Still up" }[pod];
+  const weekday = (now ?? new Date()).getDay();
+  const dayName = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][weekday];
+  const helloTpl = pickOfDay(HELLOS[pod], 21) ?? "Hey {name}";
+  const greet = helloTpl.replace("{name}", name).replace("{day}", dayName);
+  const helloLine = (helloTpl.includes("{day}") ? pickOfDay(DAY_LINES[weekday], 25) : pickOfDay(HELLO_LINES, 23)) ?? "";
   const checkIn = vault.checkIns.filter((c) => c.date === today).sort((a, b) => b.at.localeCompare(a.at))[0];
   const gentle = !!checkIn && (checkIn.mood <= 2 || checkIn.craving >= 6);
   const good = !!checkIn && checkIn.mood >= 4 && checkIn.craving <= 2;
@@ -67,7 +73,11 @@ export default function Today() {
   const nextGoal = vault.vision.filter((x) => x.progress < 100).sort((a, b) => (a.targetDate ?? "9999").localeCompare(b.targetDate ?? "9999"))[0];
   const WIcon = weather ? { sun: CloudSun, cloud: Cloud, rain: CloudRain, snow: CloudSnow, storm: CloudLightning, fog: CloudFog }[describe(weather.code).kind] : null;
 
-  const saveIntention = () => update((v) => ({ ...v, intentions: { ...v.intentions, [today]: intentDraft.trim() } }));
+  const saveIntention = () => {
+    if (intentDraft.trim() === intention) return;
+    update((v) => ({ ...v, intentions: { ...v.intentions, [today]: intentDraft.trim() } }));
+    if (intentDraft.trim()) cheer("intention");
+  };
 
   const actions = (
     <div className="space-y-2">
@@ -118,8 +128,10 @@ export default function Today() {
         <div className="absolute inset-x-5 bottom-3">
           <div className="eyebrow !text-ink-2">{now ? fmtDate(now, { weekday: "long", month: "long", day: "numeric" }) : " "}</div>
           <h1 className="mt-1 font-serif text-[40px] leading-none text-ink">
-            {greet}, {name}.
+            {greet}
+            {/[?.!]$/.test(greet) ? "" : "."}
           </h1>
+          {!gentle && <p className="mt-1.5 text-[15px] text-ink-2">{helloLine}</p>}
           {weather && WIcon && (
             <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-surface/80 px-3 py-1 text-xs text-ink-2 backdrop-blur">
               <WIcon size={13} /> {Math.round(weather.temp)}° · {describe(weather.code).label}
@@ -130,6 +142,8 @@ export default function Today() {
 
       {pod === "morning" && !gentle && <p className="-mt-3 font-serif text-xl italic text-ink-2">{opener}</p>}
       {weather && !gentle && <p className="-mt-4 text-sm text-ink-3">{weatherLine(weather)}</p>}
+
+      <VylieDay name={name} />
 
       {!gentle && actions}
 
@@ -328,12 +342,13 @@ export default function Today() {
               return (
                 <button
                   key={h.id}
-                  onClick={() =>
+                  onClick={() => {
                     update((v) => ({
                       ...v,
                       habits: v.habits.map((x) => (x.id === h.id ? { ...x, log: { ...x.log, [today]: !done } } : x)),
-                    }))
-                  }
+                    }));
+                    if (!done) cheer("habit");
+                  }}
                   className={cx(
                     "shrink-0 rounded-full border px-4 py-2.5 text-sm transition",
                     done ? "border-forest bg-forest text-on-forest" : "border-line bg-surface text-ink-2",

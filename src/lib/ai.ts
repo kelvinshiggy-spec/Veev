@@ -35,7 +35,7 @@ export function useAiStatus(): AiStatus {
   return s;
 }
 
-const ACCESS_KEY = "elevate.accessCode";
+const ACCESS_KEY = "veev.accessCode";
 export const getAccessCode = () => {
   try {
     return localStorage.getItem(ACCESS_KEY) ?? "";
@@ -103,10 +103,12 @@ export function buildContext(v: Vault): string {
   // Date, season, holidays and (if she turned it on) local weather, so the companion stays current.
   let weather: string | undefined;
   try {
-    const w = v.settings.weather ? JSON.parse(localStorage.getItem("elevate.weather") || "null") : null;
+    const w = v.settings.weather ? JSON.parse(localStorage.getItem("veev.weather") || "null") : null;
     if (w && Date.now() - w.at < 3 * 3600_000) weather = `${Math.round(w.temp)}°${w.unit.toUpperCase()}, ${describe(w.code).label.toLowerCase()}`;
   } catch {}
   lines.push(seasonalContext(dayKey(), weather));
+  const todos = (v.todos ?? []).filter((t) => t.date === dayKey());
+  lines.push(todos.length ? `Her to-do list today: ${todos.map((t) => `${t.done ? "[done] " : ""}${t.text}`).join("; ")}` : "Her to-do list today is empty.");
   return lines.join("\n");
 }
 

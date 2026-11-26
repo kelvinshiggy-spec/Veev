@@ -1,5 +1,6 @@
 "use client";
 
+import { cheer } from "@/components/cheer";
 import { useState } from "react";
 import { Check, Archive, Plus } from "lucide-react";
 import { useStore } from "@/lib/store";
@@ -16,8 +17,10 @@ export default function Habits() {
   const today = dayKey();
   const week = Array.from({ length: 7 }, (_, i) => addDays(today, i - 6));
   const habits = vault.habits.filter((h) => !h.archived);
-  const toggle = (h: Habit, d: string) =>
+  const toggle = (h: Habit, d: string) => {
     update((v) => ({ ...v, habits: v.habits.map((x) => (x.id === h.id ? { ...x, log: { ...x.log, [d]: !x.log[d] } } : x)) }));
+    if (!h.log[d]) cheer("habit");
+  };
   const showedUp = (h: Habit) => Array.from({ length: 30 }, (_, i) => addDays(today, -i)).filter((d) => h.log[d]).length;
   const unused = DEFAULT_HABITS.filter((n) => !vault.habits.some((h) => h.name === n && !h.archived));
 

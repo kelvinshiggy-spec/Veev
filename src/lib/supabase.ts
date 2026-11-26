@@ -8,7 +8,7 @@ export function supabase(): SupabaseClient | null {
   if (sb !== undefined) return sb;
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  sb = url && key ? createClient(url, key, { auth: { persistSession: true, storageKey: "elevate.auth" } }) : null;
+  sb = url && key ? createClient(url, key, { auth: { persistSession: true, storageKey: "veev.auth" } }) : null;
   return sb;
 }
 

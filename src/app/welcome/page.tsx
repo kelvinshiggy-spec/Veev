@@ -33,7 +33,7 @@ const STEPS: Step[] = [
   { key: "privacy", eyebrow: "Your privacy", title: "Private by design.", quick: true },
 ];
 
-const STEP_KEY = "elevate.onboardStep";
+const STEP_KEY = "veev.onboardStep";
 
 export default function Welcome() {
   const { vault, update } = useStore();
@@ -431,7 +431,7 @@ function PickCompanion() {
 
 function Welcomed({ onGo }: { onGo: (href: string) => void }) {
   const { vault } = useStore();
-  const name = vault.profile.name || "gorgeous";
+  const name = vault.profile.name || "Veev";
   const cn = vault.companion.name || "Vylie";
   return (
     <div className="page-in -mx-5 -mt-6 min-h-[80dvh] px-6 pt-12 sunlit">

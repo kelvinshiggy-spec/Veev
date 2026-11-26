@@ -1,5 +1,5 @@
 // Scripture: King James Version (public domain in the United States).
-// Reflections are written for ELEVATE as gentle encouragement, not doctrine.
+// Reflections are written for VEEV as gentle encouragement, not doctrine.
 
 export type VerseTheme = "strength" | "temptation" | "peace" | "grace" | "anger" | "renewal" | "joy" | "wisdom" | "together" | "rest";
 

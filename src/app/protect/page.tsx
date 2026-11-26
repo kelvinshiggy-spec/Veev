@@ -1,5 +1,6 @@
 "use client";
 
+import { cheer } from "@/components/cheer";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -17,7 +18,7 @@ import { CName } from "@/components/companion-name";
 import { IDEAS } from "@/data/activities";
 
 type Phase = "open" | "choose" | "protect" | "intensity" | "hopes" | "trigger" | "plan" | "delay" | "reassess" | "done";
-const DELAY_KEY = "elevate.delayUntil";
+const DELAY_KEY = "veev.delayUntil";
 const PROTECT_OPTIONS = ["Tomorrow morning", "My streak", "My peace", "My family", "My relationship", "My plans tomorrow", "My money goals", "My health", "My self-respect", "My gym progress", "My cats"];
 
 const HOPE_LINES: Record<string, string> = {
@@ -309,6 +310,7 @@ export default function Protect() {
             <Button
               onClick={() => {
                 saveEvent({ intensityAfter: after, outcome: after <= 2 ? "passed" : "eased" });
+                cheer("rodeOut");
                 setPhase("done");
               }}
             >

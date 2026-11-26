@@ -126,7 +126,7 @@ export function SafetyScreen({ kind, onClose, onPick }: { kind: SafetyKind | "me
         </div>
 
         <div className="mt-8 rounded-2xl bg-surface-2 p-4 text-sm leading-relaxed text-ink-3">
-          ELEVATE can't guarantee safety or replace professional care. These numbers work without internet or AI.
+          VEEV can't guarantee safety or replace professional care. These numbers work without internet or AI.
           {!locked && (
             <>
               {" "}

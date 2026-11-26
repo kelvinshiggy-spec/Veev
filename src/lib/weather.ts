@@ -16,7 +16,7 @@ export interface Weather {
   at: number;
 }
 
-const CACHE = "elevate.weather";
+const CACHE = "veev.weather";
 
 export function describe(code: number): { label: string; kind: "sun" | "cloud" | "rain" | "snow" | "storm" | "fog" } {
   if (code === 0) return { label: "Clear", kind: "sun" };

@@ -9,6 +9,7 @@ import { useSafety } from "@/components/safety";
 import { useAiReady } from "@/components/ai-gate";
 import { useCompanionName } from "@/components/companion-name";
 import { buildContext, companionPayload, streamClarity } from "@/lib/ai";
+import { addTodos, findTodo, splitTasks } from "@/lib/todos";
 import { screen, INTERRUPTING } from "@/lib/safety";
 import { listenOnce, recognitionSupported, speakAsCompanion, stopSpeaking, speechSupported, type Listener } from "@/lib/voice";
 import { persona } from "@/data/personas";
@@ -193,6 +194,17 @@ function Voice() {
         return;
       }
 
+      if (!ready && topic === "today") {
+        const items = splitTasks(text);
+        if (items.length) {
+          update((v) => addTodos(v, items));
+          const line = `Love it. I added ${items.length === 1 ? "that" : `${items.length} things`} to your list. Anything else?`;
+          setTurns((t) => [...t, { role: "assistant", content: line, at: new Date().toISOString() }]);
+          say(line, afterReply);
+          return;
+        }
+      }
+
       if (!ready) {
         const b = basicReply(text, name);
         setTurns((t) => [...t, { role: "assistant", content: b.reply, at: new Date().toISOString() }]);
@@ -218,7 +230,18 @@ function Voice() {
         abort.current.signal,
       ).catch(() => ({ text: "", error: { kind: "error" as const, message: "" } }));
       if (phaseRef.current !== "thinking") return; // interrupted or ended
-      const reply = res.text.trim();
+      // Pull out list changes she asked for, then speak only the words.
+      const tags = [...res.text.matchAll(/\[\[(todo|done):\s*([^\]]+)\]\]/gi)].map((m) => ({ kind: m[1].toLowerCase(), text: m[2].trim() }));
+      const reply = res.text.replace(/\[\[(todo|done):[^\]]*\]\]/gi, "").replace(/\[\[[^\]]*$/, "").trim();
+      if (tags.length)
+        update((v) => {
+          let nv = addTodos(v, tags.filter((t) => t.kind === "todo").map((t) => t.text), "companion");
+          for (const t of tags.filter((x) => x.kind === "done")) {
+            const hit = findTodo(nv.todos.filter((x) => x.date === dayKey() && !x.done), t.text);
+            if (hit) nv = { ...nv, todos: nv.todos.map((x) => (x.id === hit.id ? { ...x, done: true, doneAt: new Date().toISOString() } : x)) };
+          }
+          return nv;
+        });
       if (!reply) {
         const msg = res.error?.kind === "offline" ? "Looks like we're offline. Your guided tools and the Help button still work." : "I lost my train of thought for a sec. Try that again?";
         say(msg, afterReply);
@@ -249,13 +272,15 @@ function Voice() {
       c.greeting?.trim() ||
       (topic === "craving"
         ? `Hey, I'm right here. Before anything else, talk to me. What's going on?`
-        : topic === "holiday"
+        : topic === "today"
+          ? `Hey ${vault.profile.name || "Veev"}! So what's going on today? Tell me everything and I'll put it on your list.`
+          : topic === "holiday"
           ? `Okay, holiday planning! What's the vibe you want, and who's going to be there?`
           : topic === "vibes"
             ? `Movie night or music mood? Tell me how you're feeling and I'll pick something.`
             : evening
-              ? `Hey ${vault.profile.name || "you"}. How was your day, really?`
-              : `Hey ${vault.profile.name || "bestie"}. What's on your mind?`);
+              ? `Hey ${vault.profile.name || "Veev"}. How was your day, really?`
+              : `Hey ${vault.profile.name || "Veev"}. What's on your mind?`);
     setTurns([{ role: "assistant", content: greet, at: new Date().toISOString() }]);
     say(greet, afterReply);
   };

@@ -31,7 +31,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {/* Apply dark mode before paint to avoid a flash */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{var t=localStorage.getItem('elevate.theme')||'auto';if(t==='system'&&!localStorage.getItem('elevate.themeV2'))t='auto';var h=new Date().getHours();var d=t==='dark'||(t==='auto'&&(h>=19||h<6))||(t==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.classList.toggle('dark',d)}catch(e){}`,
+            __html: `try{for(var i=localStorage.length-1;i>=0;i--){var k=localStorage.key(i);if(k&&k.indexOf('elevate.')===0){var n='veev.'+k.slice(8);if(localStorage.getItem(n)===null)localStorage.setItem(n,localStorage.getItem(k));localStorage.removeItem(k)}}}catch(e){}try{var t=localStorage.getItem('veev.theme')||'auto';if(t==='system'&&!localStorage.getItem('veev.themeV2'))t='auto';var h=new Date().getHours();var d=t==='dark'||(t==='auto'&&(h>=19||h<6))||(t==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.classList.toggle('dark',d)}catch(e){}`,
           }}
         />
       </head>

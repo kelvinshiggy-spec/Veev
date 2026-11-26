@@ -11,6 +11,7 @@ import { BRAND } from "@/lib/brand";
 import { cx, haptic } from "@/lib/util";
 import { ReminderRunner } from "./reminders";
 import { SyncRunner } from "./sync-runner";
+import { CheerBubble } from "./cheer";
 import { useCompanionName } from "./companion-name";
 
 const TABS = [
@@ -27,8 +28,8 @@ function ThemeApplier() {
   useEffect(() => {
     const root = document.documentElement;
     try {
-      localStorage.setItem("elevate.theme", theme);
-      localStorage.setItem("elevate.themeV2", "1");
+      localStorage.setItem("veev.theme", theme);
+      localStorage.setItem("veev.themeV2", "1");
     } catch {}
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
     const apply = () => {
@@ -252,6 +253,7 @@ function Gate({ children }: { children: ReactNode }) {
       {!bare && <BottomNav />}
       {!bare && <ReminderRunner />}
       <SyncRunner />
+      {!bare && <CheerBubble />}
     </>
   );
 }

@@ -292,6 +292,7 @@ export interface Vault {
   streaks: Streak[];
   checkIns: CheckIn[];
   intentions: Record<string, string>;
+  todos: Todo[];
   cravings: CravingEvent[];
   letters: Letter[];
   memories: Memory[];
@@ -313,4 +314,13 @@ export interface Vault {
   companion: Companion;
   manifesto: Manifesto;
   usage: { month: string; aiCalls: number; voiceMinutes: number };
+}
+
+export interface Todo {
+  id: string;
+  text: string;
+  date: string; // day it belongs to (YYYY-MM-DD)
+  done: boolean;
+  doneAt?: string;
+  from?: "me" | "companion";
 }

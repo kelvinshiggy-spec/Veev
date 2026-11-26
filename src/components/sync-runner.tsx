@@ -20,13 +20,13 @@ export function SyncRunner() {
         if (sealed) {
           const r = await pushSealed(sealed);
           try {
-            localStorage.setItem("elevate.lastSync", r.error ? `error:${r.error}` : new Date().toISOString());
+            localStorage.setItem("veev.lastSync", r.error ? `error:${r.error}` : new Date().toISOString());
           } catch {}
         }
       }, 4000);
     };
-    window.addEventListener("elevate:saved", onSaved);
-    return () => window.removeEventListener("elevate:saved", onSaved);
+    window.addEventListener("veev:saved", onSaved);
+    return () => window.removeEventListener("veev:saved", onSaved);
   }, [sealForSync, hasLock]);
   return null;
 }

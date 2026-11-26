@@ -29,7 +29,7 @@ export default function Me() {
   const [wxNote, setWxNote] = useState("");
   return (
     <div>
-      <PageHeader eyebrow="Me" title={vault.profile.name || "You"} subtitle={vault.profile.becoming || undefined} />
+      <PageHeader eyebrow="Me" title={vault.profile.name || "Veev"} subtitle={vault.profile.becoming || undefined} />
       <div className="card divide-y divide-line">
         {LINKS.map((l) => (
           <Link key={l.href} href={l.href} className="flex items-center gap-4 px-5 py-4">

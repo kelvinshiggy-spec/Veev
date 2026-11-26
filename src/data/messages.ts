@@ -75,3 +75,33 @@ export const AFFIRMATIONS = [
   "Uncertainty is uncomfortable, not dangerous. I can sit with it.",
   "My future self is cheering for me today.",
 ];
+
+// Opening hello on Today. "{name}" is filled in with her name.
+export const HELLOS: Record<"morning" | "afternoon" | "evening" | "night", string[]> = {
+  morning: ["Happy {day}, {name}", "Happy {day}, {name}", "Good morning, {name}", "Hey {name}", "Morning, {name}", "Rise and glow, {name}", "Hiii {name}"],
+  afternoon: ["Happy {day}, {name}", "Happy {day}, {name}", "Hey {name}", "What's up, {name}", "Hiii {name}", "Afternoon, {name}", "Heyyy {name}"],
+  evening: ["Happy {day}, {name}", "Hey {name}", "What's up, {name}", "Evening, {name}", "Hi hi, {name}", "Heyyy {name}"],
+  night: ["Still up, {name}?", "Hey night owl", "Hey {name}", "Late one, {name}?"],
+};
+
+export const HELLO_LINES = [
+  "Main character energy only today.",
+  "Your glow-up is on schedule.",
+  "Clear head, cute plans. Let's go.",
+  "Vylie's been waiting. What's the tea?",
+  "Another day of being that girl.",
+  "Soft life, strong choices.",
+  "We love a clear-headed queen.",
+  "Today's vibe: unbothered and thriving.",
+];
+
+// Day-of-week lines, Sunday first.
+export const DAY_LINES = [
+  ["Sunday reset. Face mask, clean sheets, zero hangover.", "Slow Sunday, soft heart. You earned it."],
+  ["New week, same queen. Let's get it.", "Monday, but make it cute."],
+  ["Tuesday's lowkey the most underrated day. Own it.", "Two days in and already thriving."],
+  ["Halfway there, bestie. Hump day, clear head.", "Midweek glow check: passed."],
+  ["Thursday is basically Friday's opening act.", "Almost the weekend, still that girl."],
+  ["Friday plans? We're doing fun, not foggy.", "It's Friday. Main character weekend loading."],
+  ["Saturday energy: brunch, mocktails, no regrets.", "Weekend mode, but make it clear-headed."],
+];

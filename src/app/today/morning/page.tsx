@@ -26,7 +26,7 @@ export default function MorningEdition() {
   const [playing, setPlaying] = useState(false);
   useEffect(() => () => stopSpeaking(), []);
 
-  const name = vault.profile.name || "gorgeous";
+  const name = vault.profile.name || "Veev";
   const opener = pickOfDay(MORNING_OPENERS, 7) ?? "";
   const affirmation = pickOfDay(AFFIRMATIONS, 5) ?? "";
   const upcoming = vault.activities.filter((a) => a.status === "planned" && (!a.date || a.date >= today)).sort((a, b) => (a.date ?? "9999").localeCompare(b.date ?? "9999"))[0];

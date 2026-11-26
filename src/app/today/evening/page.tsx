@@ -1,5 +1,6 @@
 "use client";
 
+import { cheer } from "@/components/cheer";
 import { useEffect, useState } from "react";
 import { Mic, Sparkles, Check, Moon } from "lucide-react";
 import { useStore } from "@/lib/store";
@@ -36,7 +37,7 @@ export default function EveningEdition() {
 
   const q = QUESTIONS[i];
   const finished = i >= QUESTIONS.length;
-  const name = vault.profile.name || "love";
+  const name = vault.profile.name || "Veev";
 
   const ask = (idx: number) => {
     if (speechSupported() && QUESTIONS[idx]) speakAsCompanion(QUESTIONS[idx].q, vault.companion);
@@ -69,6 +70,7 @@ export default function EveningEdition() {
       journal: [...v.journal, { id: uid(), kind: "evening", createdAt: new Date().toISOString(), title: `Evening · ${dayKey()}`, fields: { ...a, ...(summary ? { summary } : {}) } }],
     }));
     setSaved(true);
+    cheer("journal");
   };
 
   return (
